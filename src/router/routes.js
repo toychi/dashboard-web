@@ -9,7 +9,10 @@ import Notifications from "@/pages/Notifications.vue";
 import Icons from "@/pages/Icons.vue";
 import Maps from "@/pages/Maps.vue";
 import Typography from "@/pages/Typography.vue";
-import TableList from "@/pages/TableList.vue";
+import Sources from "@/pages/Sources.vue";
+import Districts from "@/pages/Districts.vue";
+import Projects from "@/pages/Projects.vue";
+import Factors from "@/pages/Factors.vue";
 
 const routes = [
   {
@@ -48,9 +51,24 @@ const routes = [
         component: Typography
       },
       {
-        path: "table-list",
-        name: "table-list",
-        component: TableList
+        path: "sources",
+        name: "sources",
+        component: Sources
+      },
+      {
+        path: "districts",
+        name: "districts",
+        component: Districts
+      },
+      {
+        path: "factors",
+        name: "factors",
+        component: Factors
+      },
+      {
+        path: "projects",
+        name: "projects",
+        component: Projects
       }
     ]
   },

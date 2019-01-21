@@ -11,7 +11,7 @@
       <div class="logo">
         <a href="#" class="simple-text">
             <div class="logo-img">
-                <img src="@/assets/img/vue-logo.png" alt="">
+                <img src="" alt="">
             </div>
           {{title}}
         </a>
@@ -43,26 +43,28 @@ export default {
   props: {
     title: {
       type: String,
-      default: "Paper Dashboard"
+      default: "STD-HOPS"
     },
     backgroundColor: {
       type: String,
-      default: "black",
+      default: "deepsea",
       validator: value => {
-        let acceptedValues = ["white", "black", "darkblue"];
+        let acceptedValues = ["white", "black", "darkblue, deepsea"];
         return acceptedValues.indexOf(value) !== -1;
       }
     },
     activeColor: {
       type: String,
-      default: "success",
+      default: "black",
       validator: value => {
         let acceptedValues = [
           "primary",
           "info",
           "success",
           "warning",
-          "danger"
+          "danger",
+          "white",
+          "black"
         ];
         return acceptedValues.indexOf(value) !== -1;
       }

@@ -8,9 +8,9 @@
     <tbody>
     <tr v-for="(item, index) in data" :key="index">
       <slot :row="item">
-        <td v-for="(column, index) in columns"
+        <td v-for="(column, index) in columnsKey"
             :key="index"
-            v-if="hasValue(item, column)">
+            >
           {{itemValue(item, column)}}
         </td>
       </slot>
@@ -24,6 +24,7 @@ export default {
   props: {
     columns: Array,
     data: Array,
+    columnsKey: Array,
     type: {
       type: String, // striped | hover
       default: "striped"
@@ -47,7 +48,7 @@ export default {
       return item[column.toLowerCase()] !== "undefined";
     },
     itemValue(item, column) {
-      return item[column.toLowerCase()];
+      return item[column];
     }
   }
 };

@@ -14,11 +14,13 @@
     "chartist": "^0.11.0",
     "es6-promise": "^4.2.4",
     "highcharts": "^7.0.1",
+    "highcharts-more": "^0.1.7",
     "highcharts-vue": "^1.2.0",
     "vue": "^2.5.13",
     "vue-clickaway": "^2.1.0",
     "vue-notifyjs": "^0.3.0",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-template-compiler": "^2.5.22"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.0-beta.9",

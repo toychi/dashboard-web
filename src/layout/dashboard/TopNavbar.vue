@@ -12,31 +12,23 @@
         <span class="navbar-toggler-bar"></span>
       </button>
       <div class="collapse navbar-collapse">
-        <ul class="navbar-nav ml-auto">
+       <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="ti-panel"></i>
-              <p>Stats</p>
-            </a>
-          </li>
-          <drop-down class="nav-item"
-                     title="5 Notifications"
-                     title-classes="nav-link"
-                     icon="ti-bell">
-            <a class="dropdown-item" href="#">Notification 1</a>
-            <a class="dropdown-item" href="#">Notification 2</a>
-            <a class="dropdown-item" href="#">Notification 3</a>
-            <a class="dropdown-item" href="#">Notification 4</a>
-            <a class="dropdown-item" href="#">Another notification</a>
-          </drop-down>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="ti-settings"></i>
+              <i class="ti-user"></i>
               <p>
-                Settings
+               Chitipat Thabsuwan
               </p>
             </a>
           </li>
+        
+          <drop-down class="nav-item"
+                     title="Setting"
+                     title-classes="nav-link"
+                     icon="ti-settings">
+            <a class="dropdown-item" href="/stats">User profile</a>
+            <a class="dropdown-item" href="#">Log out</a>
+             </drop-down>
         </ul>
       </div>
     </div></nav>

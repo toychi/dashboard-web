@@ -1,32 +1,17 @@
 <template>
   <card class="card" title="Edit Profile">
+     
     <div>
       <form @submit.prevent>
         <div class="row">
-          <div class="col-md-5">
-            <fg-input type="text"
-                      label="Company"
-                      :disabled="true"
-                      placeholder="Paper dashboard"
-                      v-model="user.company">
-            </fg-input>
-          </div>
-          <div class="col-md-3">
+         
+          <div class="col-md-12">
 
             <fg-input type="text"
                       label="Username"
                       placeholder="Username"
                       v-model="user.username">
             </fg-input>
-          </div>
-          <div class="col-md-4">
-            <fg-input type="email"
-                      label="Username"
-                      placeholder="Email"
-                      v-model="user.email">
-            </fg-input>
-          </div>
-        </div>
 
         <div class="row">
           <div class="col-md-6">
@@ -44,53 +29,31 @@
             </fg-input>
           </div>
         </div>
+        
 
-        <div class="row">
-          <div class="col-md-12">
-            <fg-input type="text"
-                      label="Address"
-                      placeholder="Home Address"
-                      v-model="user.address">
+       <div class="row">
+          <div class="col-md-6">
+            <fg-input type="email"
+                      label="E-mail"
+                      placeholder="E-mail"
+                      v-model="user.email">
             </fg-input>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-md-4">
-            <fg-input type="text"
-                      label="City"
-                      placeholder="City"
-                      v-model="user.city">
+        
+          <div class="col-md-6">
+            <fg-input type="password"
+                      label="Password"
+                      placeholder="password"
+                      v-model="user.password">
             </fg-input>
           </div>
-          <div class="col-md-4">
-            <fg-input type="text"
-                      label="Country"
-                      placeholder="Country"
-                      v-model="user.country">
-            </fg-input>
-          </div>
-          <div class="col-md-4">
-            <fg-input type="number"
-                      label="Postal Code"
-                      placeholder="ZIP Code"
-                      v-model="user.postalCode">
-            </fg-input>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              <label>About Me</label>
-              <textarea rows="5" class="form-control border-input"
-                        placeholder="Here can be your description"
-                        v-model="user.aboutMe">
+        
 
-              </textarea>
-            </div>
-          </div>
-        </div>
         <div class="text-center">
           <p-button type="info"
                     round
@@ -108,14 +71,10 @@ export default {
   data() {
     return {
       user: {
-        company: "Paper Dashboard",
-        username: "michael23",
+        
+        username: "",
         email: "",
-        lastName: "Faker",
-        address: "Melbourne, Australia",
-        city: "melbourne",
-        postalCode: "",
-        aboutMe: `Oh so, your weak rhyme. You doubt I'll bother, reading into it.I'll probably won't, left to my own devicesBut that's the difference in our opinions.`
+        lastName: ""
       }
     };
   },

@@ -135,6 +135,9 @@
   &[data-background-color="darkblue"] {
     @include sidebar-background-color($darkblue-background-color, $white-color);
   }
+  &[data-background-color="deepsea"] {
+    @include sidebar-background-color($deepsea-background-color, $white-color);
+  }
 
   &[data-active-color="primary"] {
     @include sidebar-active-color($primary-color);
