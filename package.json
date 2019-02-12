@@ -19,9 +19,11 @@
     "highcharts-more": "^0.1.7",
     "highcharts-vue": "^1.2.0",
     "vue": "^2.5.13",
+    "vue-bootstrap-selectpicker": "^1.0.6",
     "vue-clickaway": "^2.1.0",
     "vue-notifyjs": "^0.3.0",
     "vue-router": "^3.0.1",
+    "vue-simple-search-dropdown": "^1.0.0",
     "vue-template-compiler": "^2.5.22"
   },
   "devDependencies": {

@@ -7900,6 +7900,11 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
+vue-bootstrap-selectpicker@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/vue-bootstrap-selectpicker/-/vue-bootstrap-selectpicker-1.0.6.tgz#6b29752b7010ce95c8c0d52de9bd7a99ac7094ff"
+  integrity sha512-wX+p+Za/qT9WoP8Bm7j4w2tLcf9VfIHG+ReCaK3c3tJHMtXTP93+PTfHsCs87kT6vqSW8nHP/2N2NRbRLtjGQQ==
+
 vue-clickaway@^2.1.0:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/vue-clickaway/-/vue-clickaway-2.2.2.tgz#cecf6839575e8b2afc5d3edb3efb616d293dbb44"
@@ -7944,6 +7949,11 @@ vue-router@^3.0.1:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.0.2.tgz#dedc67afe6c4e2bc25682c8b1c2a8c0d7c7e56be"
   integrity sha512-opKtsxjp9eOcFWdp6xLQPLmRGgfM932Tl56U9chYTnoWqKxQ8M20N7AkdEbM5beUh6wICoFGYugAX9vQjyJLFg==
+
+vue-simple-search-dropdown@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/vue-simple-search-dropdown/-/vue-simple-search-dropdown-1.0.0.tgz#bd93249b4436717b1d1005faf98462a460a51f5e"
+  integrity sha512-Xxo2haYmtyjiqDk6tkGAAGp7FArIUIBctW2bCV9iH5/XZmoa2wVO7kugwz9Mf+d9ObJdOxpTwoh0b84eboFcRA==
 
 vue-style-loader@^4.1.0:
   version "4.1.2"

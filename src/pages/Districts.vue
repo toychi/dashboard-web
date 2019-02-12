@@ -7,9 +7,20 @@
 </div> -->
 
   <div  class="col-sm-12">
-  <select class="selectpicker " data-style="select-with-transition" title="Single Select" data-size="15">
-    <option disabled>Choose district</option>
-    <option value="2">Bang Bon</option>
+<!-- <select class="selectpicker" data-live-search = "true">
+  <option>Bang Kapi</option>
+  <option>Bang Khae</option>
+  <option>Bang Khen</option>
+</select> -->
+
+<Dropdown
+    :options="[{ id: 1, name: 'Option 1'}, { id: 2, name: 'Option 2'}]"
+    v-on:selected="validateSelection"
+    v-on:filter="getDropdownValues"
+    :disabled="false"
+    placeholder="Please select an option">
+</Dropdown>
+
     
     <!-- 'Bang Kapi',
 		'Bang Khae',	
@@ -60,7 +71,7 @@
 		'Wang Thonglang',	
 		'Watthana',
 		'Yan Nawa' -->
-  </select>
+ 
   </div>
  <div  class="col-sm-5">
         <card>
@@ -75,6 +86,14 @@
  </div>
 </template>
 
+
+<script type="text/javascript" src="node_modules/vuejs/dist/vue.min.js"></script>
+<script type="text/javascript" src="node_modules/vue-simple-search-dropdown/dist/vue-simple-search-dropdown.min.js"></script>
+<script type="text/javascript">
+  Vue.use(Dropdown);
+</script>
+
+
 <script>
 import { StatsCard, ChartCard, HighChartCard } from "@/components/index";
 import Card from "@/components/Cards/Card.vue";
@@ -82,7 +101,10 @@ import Chartist from "chartist";
 import More from 'highcharts/highcharts-more';
 import Highcharts from 'highcharts';
 import axios from "axios";
+import Dropdown from 'vue-simple-search-dropdown';
 More(Highcharts);
+
+
 
 var categories = [
     'Bang Bon', 
@@ -158,71 +180,11 @@ export default {
 
   data() {
     return {
+
 //       info: null
 //     ,
 
-//         bar: {
-//         chartOptions: {
-//            chart: {
-//         type: 'column',
-//         width: 450,
-//         height: 300,
-//          style: {
-//             fontFamily: 'Montserrat'}
-    
-//     },
-//     title: {
-//         text: 'Selling and Rental unit'},
-        
-    
-//     xAxis: {
-//         categories: ['Total amount'],
-//         title: {
-//             text: null
-//         }
-//     },
-//     yAxis: {
-//         min: 0,
-//         title: {
-//             text: 'Unit',
-//             align: 'high'
-//         },
-//         labels: {
-//             overflow: 'justify'
-//         }
-//     },
-//     tooltip: {
-//         valueSuffix: '  Thousand'
-//     },
-//     plotOptions: {
-//         bar: {
-//             dataLabels: {
-//                 enabled: true
-//             }
-//         }
-//     },
-//     legend: {
-//         layout: 'vertical',
-//         align: 'right',
-//         verticalAlign: 'top',
-//         x: -40,
-//         y: 80,
-//         floating: true,
-//         borderWidth: 1,
-//         backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-//         shadow: true
-//     },
-//     credits: {
-//         enabled: false
-//     },
-//     series: [{
-//         name: 'Selling amount',
-//         data: [10]
-//     }, {
-//         name: 'Rental amount',
-//         data: [5 ]
-//     }]
-// }},
+
 
 
 barchart:{
@@ -404,14 +366,60 @@ bkkmap: {
           ]
         }
       
-        }}
-
-
-
-
-
-
-    }}
+}}}}
 </script>
 <style>
+/* select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  border: 0 !important;
+  background: #2c3e50;
+  background-image: none;
+}
+/* Custom Select */
+/* .select {
+  position: relative;
+  display: block;
+  width: 20em;
+  height: 3em;
+  line-height: 3;
+  background: #2c3e50;
+  overflow: hidden;
+  border-radius: .25em;
+}
+select {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 0 0 .5em;
+  color: #fff;
+  cursor: pointer;
+}
+select::-ms-expand {
+  display: none;
+} */
+/* Arrow */
+/* .select::after {
+  content: '\25BC';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 1em;
+  background: #34495e;
+  pointer-events: none;
+} */
+/* Transition */
+/* .select:hover::after {
+  color: #f39c12;
+}
+.select::after {
+  -webkit-transition: .25s all ease;
+  -o-transition: .25s all ease;
+  transition: .25s all ease;
+} */ 
 </style>

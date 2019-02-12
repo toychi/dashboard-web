@@ -4,9 +4,14 @@
     <!-- hightchart -->
     <div class="row">
      <div class="col-sm-5">
-        <high-chart-card :chartOptions="solidGauge.chartOptions"></high-chart-card>
+        <high-chart-card :chartOptions="solidGauge.chartOptions">
+         
+        </high-chart-card>
         <!-- <high-chart-card :chartOptions="splineChart.chartOptions"></high-chart-card> -->
-        <high-chart-card :chartOptions="ranking.chartOptions"></high-chart-card>
+         <button id="plain">Plain</button>
+        <high-chart-card :chartOptions="ranking.chartOptions">
+          
+        </high-chart-card>
       </div>
       <div class="col-sm-7 col-12">
         <card>
@@ -255,224 +260,17 @@ line :{
     }
 },
 
-  // splineChart: {
-  //       chartOptions: {
-  //         chart: {
-  //           type: "spline",
-  //           width: 300,
-  //           height: 230,
-            
-  //           style: {
-  //           fontFamily: 'Montserrat',
-  //            fontSize: 9}
-  //       },
-          
-  //         title: {
-  //           text: "Price to Rent Ratio History ",
-  //           style: {fontSize: 15}
-  //       },
-  //         yAxis: {
-  //           title: {
-  //             text: "Price to Rent Ratio"
-  //           }
-  //         },
-  //         series: [
-  //           {
-  //             data: [10, 0, 8, 2, 6],
-  //             color: "#50A6C2"
-  //           }
-  //         ]
-  //       }
-  //     },
+
       
    solidGauge: {
     chartOptions: {
-       chart: {
+
+    chart: {
         type: 'solidgauge',
-        
-        height: 300,
-          style: {
-            fontFamily: 'Montserrat',
-            fontSize: 5,
-            }
-        },
-        title: {
-          text: "Current Price to Rent Ratio",
-        }
-    }},
-
-    
-//    pie: {
-//         chartOptions: {
-//          chart: {
-//         plotBackgroundColor: null,
-//         plotBorderWidth: null,
-//         plotShadow: false,
-//         type: 'pie',
-//         height: 250,
-//         style: {
-//             fontFamily: 'Montserrat'}
-      
-//     },
-//     title: {
-//         text: 'Types of house in Market'
-//     },
-//     tooltip: {
-//         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-//     },
-//     plotOptions: {
-//         pie: {
-//             allowPointSelect: true,
-//             cursor: 'pointer',
-//             dataLabels: {
-//                 enabled: true,
-//                 format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-//                 style: {
-//                     color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-//                 }
-//             }
-//         }
-//     },
-//     series: [{
-//         name: 'Amount',
-//         colorByPoint: true,
-//         data: [{
-//             name: 'Single',
-//             y: 61.41,
-//             sliced: true,
-//             selected: true
-//         }, {
-//             name: 'Townhouse',
-//             y: 11.84
-//         }, {
-//             name: 'Apartment',
-//             y: 10.85
-//         }, {
-//             name: 'Flat',
-//             y: 4.67
-//         }]
-//     }]
-// }},
+        height:300
+    }}},
 
 
-//           bar: {
-//         chartOptions: {
-//            chart: {
-//         type: 'column',
-//         height: 400,
-//          style: {
-//             fontFamily: 'Montserrat'}
-    
-//     },
-//     title: {
-//         text: 'Average selling price and rental price',
-//         style: {fontSize: 15}},
-    
-//     xAxis: {
-//         categories: ['Average Price'],
-//         title: {
-//             text: null
-//         }
-//     },
-//     yAxis: {
-//         min: 0,
-//         title: {
-//             text: 'Price(millions)',
-//             align: 'high'
-//         },
-//         labels: {
-//             overflow: 'justify'
-//         }
-//     },
-//     tooltip: {
-//         valueSuffix: ' millions'
-//     },
-//     plotOptions: {
-//         bar: {
-//             dataLabels: {
-//                 enabled: true
-//             }
-//         }
-//     },
-//     legend: {
-//         layout: 'vertical',
-//         align: 'right',
-//         verticalAlign: 'top',
-//         x: -40,
-//         y: 80,
-//         floating: true,
-//         borderWidth: 1,
-//         backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-//         shadow: true
-//     },
-//     credits: {
-//         enabled: false
-//     },
-//     series: [{
-//         name: 'Selling price',
-//         data: [10]
-//     }, {
-//         name: 'Rental Price',
-//         data: [5 ]
-//     }]
-// }},
-
-        
-//         bubble: {
-//         chartOptions: {
-//          chart: {
-//         type: 'packedbubble',
-//         height: '80%',
-//         height: 700,
-//          style: {
-//             fontFamily: 'Montserrat'}
-//     },
-//     title: {
-//         text: 'District ranking by amount of houses for sale'},
-    
-//     tooltip: {
-//         useHTML: true,
-//         pointFormat: '<b>{point.name}:</b> {point.y}</sub>'
-//     },
-//     plotOptions: {
-//         packedbubble: {
-//             dataLabels: {
-//                 enabled: true,
-//                 format: '{point.name}',
-//                 style: {
-//                     color: 'black',
-//                     textOutline: 'none',
-//                     fontWeight: 'normal'
-//                 }
-//             },
-//             minPointSize: 5
-//         }
-//     },
-//     series: [{
-//         name: 'high',
-//         data: [{
-//         	value: 12, name: 'Sathon'
-//         }, {
-//           value: 10, name: 'Silom'
-//         },
-//         {
-//           value: 12, name: 'Bang rak'
-//         }]},{
-//         	name: 'Average',
-//           data: [{
-//  	         value: 8, name: 'Bangkhae'
-//           },{
-//  	         value: 7, name: 'Bang Na'
-//           }]
-//         }, {
-//         	name: 'Low',
-//           data: [{value: 5, name: 'Lat Phrao'},{
-//  	         value: 4, name: 'Khlong Toei'
-//           }]
-//         }
-//         ]
-
-// }},
 
   bkkmap: {
         chartOptions: {
@@ -571,7 +369,7 @@ line :{
       
         }}
     
-   }}}
+    }}}
 </script>
 <style>
 </style>

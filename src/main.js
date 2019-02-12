@@ -10,6 +10,8 @@ import Highcharts from 'highcharts'
 import PaperDashboard from "./plugins/paperDashboard";
 import "vue-notifyjs/themes/default.css";
 
+
+
 Vue.use(PaperDashboard);
 Vue.use(HighchartsVue);
 
