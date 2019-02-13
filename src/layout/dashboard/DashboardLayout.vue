@@ -4,7 +4,7 @@
       <template slot="links">
         <sidebar-link to="/dashboard" name="Dashboard" icon="ti-dashboard"/>
         <sidebar-link to="/districts" name="Districts" icon="ti-location-pin"/>
-        <sidebar-link to="/factors" name="Factors" icon="ti-map-alt"/>
+        <sidebar-link to="/factors" name="Cluster" icon="ti-map-alt"/>
         <sidebar-link to="/sources" name="Sources" icon="ti-view-list-alt"/>
         <!-- <sidebar-link to="/projects" name="Projects" icon="ti-pencil-alt2"/> -->
         <sidebar-link to="/notifications" name="Notifications" icon="ti-bell"/>

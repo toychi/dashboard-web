@@ -13,13 +13,7 @@
   <option>Bang Khen</option>
 </select> -->
 
-<Dropdown
-    :options="[{ id: 1, name: 'Option 1'}, { id: 2, name: 'Option 2'}]"
-    v-on:selected="validateSelection"
-    v-on:filter="getDropdownValues"
-    :disabled="false"
-    placeholder="Please select an option">
-</Dropdown>
+
 
     
     <!-- 'Bang Kapi',
@@ -73,13 +67,13 @@
 		'Yan Nawa' -->
  
   </div>
- <div  class="col-sm-5">
+ <div  class="col-sm-7">
         <card>
           <highcharts class="map" :constructor-type="'mapChart'" :options="bkkmap.chartOptions" :updateArgs="updateArgs"></highcharts>
         </card>
          
       </div>
-  <div class="col-sm-7">
+  <div class="col-sm-5">
         <high-chart-card :chartOptions="barchart.chartOptions"></high-chart-card>
         
       </div>
@@ -87,11 +81,7 @@
 </template>
 
 
-<script type="text/javascript" src="node_modules/vuejs/dist/vue.min.js"></script>
-<script type="text/javascript" src="node_modules/vue-simple-search-dropdown/dist/vue-simple-search-dropdown.min.js"></script>
-<script type="text/javascript">
-  Vue.use(Dropdown);
-</script>
+
 
 
 <script>
@@ -101,7 +91,7 @@ import Chartist from "chartist";
 import More from 'highcharts/highcharts-more';
 import Highcharts from 'highcharts';
 import axios from "axios";
-import Dropdown from 'vue-simple-search-dropdown';
+
 More(Highcharts);
 
 
@@ -184,94 +174,116 @@ export default {
 //       info: null
 //     ,
 
-
-
-
 barchart:{
- chartOptions: {
-    chart: {
-        type: 'bar',
-        height: 650,
-        style: {
-				fontFamily: 'Montserrat'}
+  chartOptions:{
+    chart:{
+      type: 'column',
+      height: 500,
+      style:{	fontFamily: 'Montserrat'}
     },
     title: {
-        text: 'Average Selling price and Rental price'
-    },
-    subtitle: {
-        text: ''
-    },
-    xAxis: [{
-        categories: categories,
-        reversed: false,
-        labels: {
-            step: 1
-        }
-    }, { // mirror axis on right side
-        opposite: true,
-        reversed: false,
-        categories: categories,
-        linkedTo: 0,
-        labels: {
-            step: 1
-        }
-    }],
-    yAxis: {
-        title: {
-            text: null
-        },
-        labels: {
-            formatter: function () {
-                return Math.abs(this.value) + '';
-            }
-        }
-    },
-
-    plotOptions: {
-        series: {
-            stacking: 'normal'
-        }
-    },
-
-    tooltip: {
-        formatter: function () {
-            return '<b>' + this.series.name + ', price ' + this.point.category + '</b><br/>' +
-                'Price: ' + Highcharts.numberFormat(Math.abs(this.point.y), 0);
-        }
+        text: 'Amount of House and Condominium'
+   },
+    xAxis: {
+        categories: ['House', 'Condomminium']
     },
 
     series: [{
-        name: 'Selling',
-        data: [
-            -2.2, -2.1, -2.2, -2.4, -2.4,
-            -2.7, -3.0, -3.3, -3.2, -2.4,
-            -2.9, -3.5, -4.4, -4.1, -2.4,
-            -3.4, -2.7, -2.3, -2.2, -2.4,
-            -1.6, -0.6, -0.3, -0.0, -2.4,
-            -0.0, -1.6, -0.6, -0.3,  -2.4,
-            -0.0, -1.6, -0.6, -0.3, -0.0,
-             -1.6, -0.6, -0.3, -0.0, -2.4,
-            -0.0, -1.6, -0.6, -0.3,  -2.4,
-            -0.0, -1.6, -0.6, -0.3, -0.0,          
+        type: 'column',
+        colorByPoint: true,
+        data: [29.9, 71.5],
+        showInLegend: false
+    }]
+  
+  }
+},
+
+
+// barchart:{
+//  chartOptions: {
+//     chart: {
+//         type: 'bar',
+//         height: 650,
+//         style: {
+// 				fontFamily: 'Montserrat'}
+//     },
+//     title: {
+//         text: 'Average Selling price and Rental price'
+//     },
+//     subtitle: {
+//         text: ''
+//     },
+//     xAxis: [{
+//         categories: categories,
+//         reversed: false,
+//         labels: {
+//             step: 1
+//         }
+//     }, { // mirror axis on right side
+//         opposite: true,
+//         reversed: false,
+//         categories: categories,
+//         linkedTo: 0,
+//         labels: {
+//             step: 1
+//         }
+//     }],
+//     yAxis: {
+//         title: {
+//             text: null
+//         },
+//         labels: {
+//             formatter: function () {
+//                 return Math.abs(this.value) + '';
+//             }
+//         }
+//     },
+
+//     plotOptions: {
+//         series: {
+//             stacking: 'normal'
+//         }
+//     },
+
+//     tooltip: {
+//         formatter: function () {
+//             return '<b>' + this.series.name + ', price ' + this.point.category + '</b><br/>' +
+//                 'Price: ' + Highcharts.numberFormat(Math.abs(this.point.y), 0);
+//         }
+//     },
+
+//     series: [{
+//         name: 'Selling',
+//         data: [
+//             -2.2, -2.1, -2.2, -2.4, -2.4,
+//             -2.7, -3.0, -3.3, -3.2, -2.4,
+//             -2.9, -3.5, -4.4, -4.1, -2.4,
+//             -3.4, -2.7, -2.3, -2.2, -2.4,
+//             -1.6, -0.6, -0.3, -0.0, -2.4,
+//             -0.0, -1.6, -0.6, -0.3,  -2.4,
+//             -0.0, -1.6, -0.6, -0.3, -0.0,
+//              -1.6, -0.6, -0.3, -0.0, -2.4,
+//             -0.0, -1.6, -0.6, -0.3,  -2.4,
+//             -0.0, -1.6, -0.6, -0.3, -0.0,          
 
             
-        ]
-    }, {
-        name: 'Rental',
-        data: [
-            2.1, 2.0, 2.1, 2.3, 2.6,
-            2.9, 3.2, 3.1, 2.9, 3.4,
-            4.3, 4.0, 3.5, 2.9, 2.5,
-            2.7, 2.2, 1.1, 0.6, 0.2,
-           2.1, 2.0, 2.1, 2.3, 2.6,
-            2.9, 3.2, 3.1, 2.9, 3.4,
-            4.3, 4.0, 3.5, 2.9, 2.5,
-            2.7, 2.2, 1.1, 0.6, 0.2,
-             2.1, 2.0, 2.1, 2.3, 2.6,
-            2.9, 3.2, 3.1, 2.9, 3.4,
-        ]
-    }]
-}},
+//         ]
+//     }, {
+//         name: 'Rental',
+//         data: [
+//             2.1, 2.0, 2.1, 2.3, 2.6,
+//             2.9, 3.2, 3.1, 2.9, 3.4,
+//             4.3, 4.0, 3.5, 2.9, 2.5,
+//             2.7, 2.2, 1.1, 0.6, 0.2,
+//            2.1, 2.0, 2.1, 2.3, 2.6,
+//             2.9, 3.2, 3.1, 2.9, 3.4,
+//             4.3, 4.0, 3.5, 2.9, 2.5,
+//             2.7, 2.2, 1.1, 0.6, 0.2,
+//              2.1, 2.0, 2.1, 2.3, 2.6,
+//             2.9, 3.2, 3.1, 2.9, 3.4,
+//         ]
+//     }]
+// }},
 
 
 bkkmap: {
@@ -279,7 +291,7 @@ bkkmap: {
            chart: {
           map: 'myMap',
         
-          height: 550,
+          height: 500,
         
            style: {
             fontFamily: 'Montserrat',
@@ -369,57 +381,5 @@ bkkmap: {
 }}}}
 </script>
 <style>
-/* select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  -ms-appearance: none;
-  appearance: none;
-  outline: 0;
-  box-shadow: none;
-  border: 0 !important;
-  background: #2c3e50;
-  background-image: none;
-}
-/* Custom Select */
-/* .select {
-  position: relative;
-  display: block;
-  width: 20em;
-  height: 3em;
-  line-height: 3;
-  background: #2c3e50;
-  overflow: hidden;
-  border-radius: .25em;
-}
-select {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0 0 0 .5em;
-  color: #fff;
-  cursor: pointer;
-}
-select::-ms-expand {
-  display: none;
-} */
-/* Arrow */
-/* .select::after {
-  content: '\25BC';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  padding: 0 1em;
-  background: #34495e;
-  pointer-events: none;
-} */
-/* Transition */
-/* .select:hover::after {
-  color: #f39c12;
-}
-.select::after {
-  -webkit-transition: .25s all ease;
-  -o-transition: .25s all ease;
-  transition: .25s all ease;
-} */ 
+
 </style>

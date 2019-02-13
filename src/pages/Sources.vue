@@ -71,7 +71,7 @@ const tableData2 = [
   {
     id: 1,
    name: "source1",
-   action: ""
+   action: "Edit"
 
   }
 ];
