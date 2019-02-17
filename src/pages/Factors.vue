@@ -17,9 +17,25 @@ import Axios from "axios";
 
 export default {
   mounted() {
-    Axios.get("http://35.187.253.51:4000/mapcluster").then(
-      response => (this.clusterlabel = response.data)
-    );
+    // Axios.get("http://35.187.253.51:4000/mapcluster").then(response => {
+    Axios.get("http://0.0.0.0:4000/mapcluster").then(response => {
+      this.clusterlabel = response.data;
+      var i, j;
+      for (j = 0; j < 5; j++) {
+        var k = [];
+        for (i = 0; i < this.clusterlabel["labels"].length; i++) {
+          if (this.clusterlabel["labels"][i] == j) {
+            k.push(this.clusterlabel["keys"][i]);
+          }
+        }
+        this.bkkmap.chartOptions.series.push({
+          name: String(j),
+          data: k.map(function(code) {
+            return { code: code };
+          })
+        });
+      }
+    });
   },
   data() {
     return {
@@ -34,7 +50,7 @@ export default {
             }
           },
           title: {
-            text: "Price to Rent Ratio of Bangkok "
+            text: "Cluster analysis using K-Means algorithm"
           },
           legend: {
             align: "right",
@@ -65,93 +81,94 @@ export default {
               }
             }
           },
-          series: [
-            {
-              name: "1",
-              data: [
-                "pn",
-                "ds",
-                "nc",
-                "br",
-                "bk",
-                "bkp",
-                "ptw",
-                "ppstp",
-                "pkn",
-                "mbr",
-                "lkb"
-              ].map(function(code) {
-                return { code: code };
-              })
-            },
-            {
-              name: "2",
-              data: [
-                "ynw",
-                "sptw",
-                "pyt",
-                "tbr",
-                "bky",
-                "hk",
-                "ks",
-                "tlc",
-                "bkn",
-                "bkt"
-              ].map(function(code) {
-                return { code: code };
-              })
-            },
-            {
-              name: "3",
-              data: [
-                "pscr",
-                "nk",
-                "rbrn",
-                "bp",
-                "dd",
-                "bku",
-                "st",
-                "bs",
-                "ctc",
-                "bkl"
-              ].map(function(code) {
-                return { code: code };
-              })
-            },
-            {
-              name: "4",
-              data: [
-                "pw",
-                "kt",
-                "sl",
-                "ct",
-                "dm",
-                "rctw",
-                "lp",
-                "wtn",
-                "bkh",
-                "ls"
-              ].map(function(code) {
-                return { code: code };
-              })
-            },
-            {
-              name: "5",
-              data: [
-                "sm",
-                "kny",
-                "sps",
-                "wtl",
-                "ksw",
-                "bn",
-                "twwtn",
-                "tk",
-                "bb"
-              ].map(function(code) {
-                return { code: code };
-              })
-            }
-          ]
+          series: []
+          // series: [
+          //   {
+          //     name: "1",
+          //     data: [
+          //       "pn",
+          //       "ds",
+          //       "nc",
+          //       "br",
+          //       "bk",
+          //       "bkp",
+          //       "ptw",
+          //       "ppstp",
+          //       "pkn",
+          //       "mbr",
+          //       "lkb"
+          //     ].map(function(code) {
+          //       return { code: code };
+          //     })
+          //   },
+          //   {
+          //     name: "2",
+          //     data: [
+          //       "ynw",
+          //       "sptw",
+          //       "pyt",
+          //       "tbr",
+          //       "bky",
+          //       "hk",
+          //       "ks",
+          //       "tlc",
+          //       "bkn",
+          //       "bkt"
+          //     ].map(function(code) {
+          //       return { code: code };
+          //     })
+          //   },
+          //   {
+          //     name: "3",
+          //     data: [
+          //       "pscr",
+          //       "nk",
+          //       "rbrn",
+          //       "bp",
+          //       "dd",
+          //       "bku",
+          //       "st",
+          //       "bs",
+          //       "ctc",
+          //       "bkl"
+          //     ].map(function(code) {
+          //       return { code: code };
+          //     })
+          //   },
+          //   {
+          //     name: "4",
+          //     data: [
+          //       "pw",
+          //       "kt",
+          //       "sl",
+          //       "ct",
+          //       "dm",
+          //       "rctw",
+          //       "lp",
+          //       "wtn",
+          //       "bkh",
+          //       "ls"
+          //     ].map(function(code) {
+          //       return { code: code };
+          //     })
+          //   },
+          //   {
+          //     name: "5",
+          //     data: [
+          //       "sm",
+          //       "kny",
+          //       "sps",
+          //       "wtl",
+          //       "ksw",
+          //       "bn",
+          //       "twwtn",
+          //       "tk",
+          //       "bb"
+          //     ].map(function(code) {
+          //       return { code: code };
+          //     })
+          //   }
+          // ]
         }
       }
     };

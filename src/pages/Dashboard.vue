@@ -294,7 +294,8 @@ export default {
           type: "solidgauge",
           style: {
               fontFamily: "Montserrat"
-            }
+            },
+          height: 300
         },
         title: {
           text: "Overall Price-to-rent ratio"
@@ -316,7 +317,7 @@ export default {
         // the value axis
         yAxis: {
           min: 0,
-          max: 200,
+          max: 30,
           stops: [
             [0.1, "#55BF3B"], // green
             [0.5, "#DDDF0D"], // yellow
@@ -335,7 +336,7 @@ export default {
         series: [
           {
             name: "Speed",
-            data: [80],
+            data: [14],
             dataLabels: {
               y: -45,
               borderWidth: 0,
@@ -345,7 +346,7 @@ export default {
                 ((Highcharts.theme && Highcharts.theme.contrastTextColor) ||
                   "black") +
                 '">{y}</span><br/>' +
-                '<span style="font-size:12px;color:silver">km/h</span></div>'
+                '<span style="font-size:12px;color:silver"></span></div>'
             },
             tooltip: {
               valueSuffix: " km/h"
