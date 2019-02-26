@@ -8,7 +8,7 @@
         <sidebar-link to="/sources" name="Sources" icon="ti-view-list-alt"/>
         <!-- <sidebar-link to="/projects" name="Projects" icon="ti-pencil-alt2"/> -->
         <sidebar-link to="/notifications" name="Notifications" icon="ti-bell"/>
-       
+        
       </template>
       <mobile-menu>
          <div class="collapse navbar-collapse">
