@@ -16,7 +16,7 @@
         
         <div><b-form-select v-model="district" :options="options2" /></div>
         <h5></h5>
-        <div><b-form-select v-model="district" :options="options2" /></div>
+        <div><b-form-select v-model="district2" :options="options4" /></div>
         <h5></h5>
         <high-chart-card :chartOptions="bar.chartOptions"></high-chart-card>
       
@@ -45,7 +45,7 @@
         <h1></h1>
         <div><b-form-select v-model="district" :options="options2" /></div>
         <h5></h5>
-        <div><b-form-select v-model="district" :options="options2" /></div>
+        <div><b-form-select v-model="district2" :options="options4" /></div>
         
       </div>
     </div>
@@ -78,11 +78,9 @@ export default {
    */
   data() {
     return {
-      type: 'single',
+      type: 'house',
       options1: [
-          { text: 'Single', value: 'single' },
-           { text: 'Twin', value: 'twin' },
-            { text: 'Townhouse', value: 'townhouse' },
+          { text: 'House', value: 'house' },
           { text: 'Condominium', value: 'condo' },
           ],
 
@@ -139,6 +137,60 @@ export default {
           { text: 'Yan Nawa', value: 'ynw' },
 
         ],
+               district2: 'st',
+         options4:[
+          { text: 'All', value: 'all' },
+          { text: 'Bang Bon', value: 'bb' },
+          { text: 'Bang Kapi', value: 'bkp' },
+          { text: 'Bang Khen', value: 'bk' },
+          { text: 'Bang Kho Laem', value: 'bkl' },
+          { text: 'Bang Khun Thian', value: 'bkt' },
+          { text: 'Bang Na', value: 'bn' },
+          { text: 'Bang Phlat', value: 'bp' },
+          { text: 'Bang Rak', value: 'br' },
+          { text: 'Bang Sue', value: 'bs' },
+          { text: 'Bangkok Noi', value: 'bkn' },
+          { text: 'Bangkok Yai', value: 'bky' },
+          { text: 'Bueng Kum', value: 'bku' },
+          { text: 'Chom Thong', value: 'ct' },
+          { text: 'Din Daeng', value: 'dd' },
+          { text: 'Don Mueang', value: 'dm' },
+          { text: 'Dusit', value: 'ds' },
+          { text: 'Huai Khwang', value: 'hk' },
+          { text: 'Khan Na Yao', value: 'kny' },
+          { text: 'Khlong Sam Wa', value: 'ksw' },
+          { text: 'Khlong San', value: 'ks' },
+          { text: 'Khlong Toei', value: 'kt' },
+          { text: 'Lak Si', value: 'ls' },
+          { text: 'Lat Krabang', value: 'lkb' },
+          { text: 'Lat Phrao', value: 'lp' },
+          { text: 'Min Buri', value: 'mbr' },
+          { text: 'Nong Chok', value: 'nc' },
+          { text: 'Nong Khaem', value: 'nk' },
+          { text: 'Pathum Wan', value: 'ptw' },
+          { text: 'Phasi Charoen', value: 'pscr' },
+          { text: 'Phaya Thai', value: 'pyt' },
+          { text: 'Phra Khanong', value: 'pkn' },
+          { text: 'Phra Nakhon', value: 'pn' },
+          { text: 'Pom Prap Sattru Phai', value: 'ppstp' },
+          { text: 'Prawet', value: 'pw' },
+          { text: 'Rat Burana', value: 'rbrn' },
+          { text: 'Ratchathewi', value: 'rctw' },
+          { text: 'Sai Mai', value: 'sm' },
+          { text: 'Samphanthawong', value: 'sptw' },
+          { text: 'Saphan Sung', value: 'sps' },
+          { text: 'Sathon', value: 'st' },
+          { text: 'Suan Luang', value: 'sl' },
+          { text: 'Taling Chan', value: 'tlc' },
+          { text: 'Thawi Watthana', value: 'twwtn' },
+          { text: 'Thon Buri', value: 'tbr' },
+          { text: 'Thung Khru', value: 'tk' },
+          { text: 'Wang Thonglang', value: 'wtl' },
+          { text: 'Watthana', value: 'wtn' },
+          { text: 'Yan Nawa', value: 'ynw' },
+
+        ],
+
 
          year: '2018',
         options3:[
@@ -194,7 +246,7 @@ export default {
  xAxis: {
         categories: [
             'All',
-            'Silom'
+            'Sathon'
         ]},
 
           series: [
@@ -283,7 +335,7 @@ export default {
               ]
             },
             {
-              name: "Silom",
+              name: "Sathon",
               data: [
                 24,
                 22,
@@ -331,6 +383,9 @@ export default {
           //     fontSize: 15
           //   },
         },
+        // subtitle:{
+        //   text: "Yellow - Undervaluation ,Green - Good , Red - Overvaluation"
+        // },
         tooltip: {
           enabled: false
         },
@@ -382,7 +437,8 @@ export default {
             tooltip: {
               valueSuffix: ""
             }
-          }
+          },
+      
         ],
 
         name: 'Undervaluation',
