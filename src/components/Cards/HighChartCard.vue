@@ -1,6 +1,6 @@
 <template>
   <card>
-    <highcharts class="chart" :options="chartOptions" :updateArgs="updateArgs"></highcharts>
+    <highcharts class="chart" :options="chartOptions"></highcharts>
   </card>
 </template>
 

@@ -1,52 +1,73 @@
 <template>
   <div>
     <!-- hightchart -->
-    <center> <b-form-group label="">
-      <b-form-radio-group v-model="type" :options="options1" name="radioInline" />
-    </b-form-group>
-        </center>
+    <center>
+      <div class="row">
+        <div class="col-sm-6">
+          <button
+            type="button"
+            v-bind:id="[isActive ? 'house' : 'condo']"
+            @click="toggleClass()"
+            class="btn btn-primary btn-lg btn-block"
+          >House</button>
+        </div>
+        <div class="col-sm-6">
+          <button
+            type="button"
+            v-bind:id="[isActive ? 'condo' : 'house']"
+            @click="isActive = !isActive"
+            class="btn btn-primary btn-lg btn-block"
+          >Condominium</button>
+        </div>
+      </div>
+      <select class="selectpicker">
+        <option>Mustard</option>
+        <option>Ketchup</option>
+        <option>Barbecue</option>
+      </select>
+      <AdvancedSelect v-model="value" :options="options" :disabled="disabled"/>
+    </center>
     <div class="row">
-    
       <div class="col-sm-5">
-        
         <high-chart-card :chartOptions="solidGauge"></high-chart-card>
         <!-- <high-chart-card :chartOptions="ranking.chartOptions"></high-chart-card> -->
       </div>
       <div class="col-sm-7">
-        
-        <div><b-form-select v-model="district" :options="options2" /></div>
+        <div>
+          <b-form-select v-model="district" :options="options2"/>
+        </div>
         <h5></h5>
-        <div><b-form-select v-model="district2" :options="options4" /></div>
+        <div>
+          <b-form-select v-model="district2" :options="options4"/>
+        </div>
         <h5></h5>
         <high-chart-card :chartOptions="bar.chartOptions"></high-chart-card>
-      
       </div>
- 
+
       <div class="col-sm-12">
         <!-- <high-chart-card :chartOptions="pie.chartOptions"></high-chart-card>
         <high-chart-card :chartOptions="bar.chartOptions"></high-chart-card>-->
-          <div><b-form-select v-model="year" :options="options3" /></div>
-          <h5></h5>
-         <card>
-          <highcharts
-            class="map"
-            :constructor-type="'mapChart'"
-            :options="bkkmap.chartOptions"
-            :updateArgs="updateArgs"
-          >        
-        </highcharts>
-        </card>
+        <div>
+          <b-form-select v-model="year" :options="options3"/>
         </div>
-          <div class="col-sm-9">
-         <high-chart-card :chartOptions="line.chartOptions"></high-chart-card>
+        <h5></h5>
+        <card>
+          <highcharts class="map" :constructor-type="'mapChart'" :options="bkkmap.chartOptions"></highcharts>
+        </card>
+      </div>
+      <div class="col-sm-9">
+        <high-chart-card :chartOptions="line.chartOptions"></high-chart-card>
       </div>
 
       <div class="col-sm-3 col-12">
         <h1></h1>
-        <div><b-form-select v-model="district" :options="options2" /></div>
+        <div>
+          <b-form-select v-model="district" :options="options2"/>
+        </div>
         <h5></h5>
-        <div><b-form-select v-model="district2" :options="options4" /></div>
-        
+        <div>
+          <b-form-select v-model="district2" :options="options4"/>
+        </div>
       </div>
     </div>
   </div>
@@ -55,11 +76,18 @@
 <script src="https://code.highcharts.com/modules/solid-gauge.src.js"></script>
 
 <script>
-import { StatsCard, ChartCard, HighChartCard } from "@/components/index";
+import {
+  StatsCard,
+  ChartCard,
+  HighChartCard,
+  Multiselect
+} from "@/components/index";
 import Card from "@/components/Cards/Card.vue";
 import Chartist from "chartist";
 import More from "highcharts/highcharts-more";
 import Highcharts from "highcharts";
+import AdvancedSelect from "@myena/advanced-select";
+
 More(Highcharts);
 import loadSolidGauge from "highcharts/modules/solid-gauge.js";
 loadSolidGauge(Highcharts);
@@ -69,6 +97,8 @@ export default {
     StatsCard,
     ChartCard,
     HighChartCard,
+    Multiselect,
+    AdvancedSelect,
     mounted() {
       this.init();
     }
@@ -78,140 +108,139 @@ export default {
    */
   data() {
     return {
-      type: 'house',
+      options: [{ value: 1, text: "One" }, { value: 2, text: "Two" }],
+      value: null,
+      secondValue: "1",
+      disabled: false,
+      isActive: true,
+      type: "house",
       options1: [
-          { text: 'House', value: 'house' },
-          { text: 'Condominium', value: 'condo' },
-          ],
+        { text: "House", value: "house" },
+        { text: "Condominium", value: "condo" }
+      ],
 
-        district: 'all',
-        options2:[
-          { text: 'All', value: 'all' },
-          { text: 'Bang Bon', value: 'bb' },
-          { text: 'Bang Kapi', value: 'bkp' },
-          { text: 'Bang Khen', value: 'bk' },
-          { text: 'Bang Kho Laem', value: 'bkl' },
-          { text: 'Bang Khun Thian', value: 'bkt' },
-          { text: 'Bang Na', value: 'bn' },
-          { text: 'Bang Phlat', value: 'bp' },
-          { text: 'Bang Rak', value: 'br' },
-          { text: 'Bang Sue', value: 'bs' },
-          { text: 'Bangkok Noi', value: 'bkn' },
-          { text: 'Bangkok Yai', value: 'bky' },
-          { text: 'Bueng Kum', value: 'bku' },
-          { text: 'Chom Thong', value: 'ct' },
-          { text: 'Din Daeng', value: 'dd' },
-          { text: 'Don Mueang', value: 'dm' },
-          { text: 'Dusit', value: 'ds' },
-          { text: 'Huai Khwang', value: 'hk' },
-          { text: 'Khan Na Yao', value: 'kny' },
-          { text: 'Khlong Sam Wa', value: 'ksw' },
-          { text: 'Khlong San', value: 'ks' },
-          { text: 'Khlong Toei', value: 'kt' },
-          { text: 'Lak Si', value: 'ls' },
-          { text: 'Lat Krabang', value: 'lkb' },
-          { text: 'Lat Phrao', value: 'lp' },
-          { text: 'Min Buri', value: 'mbr' },
-          { text: 'Nong Chok', value: 'nc' },
-          { text: 'Nong Khaem', value: 'nk' },
-          { text: 'Pathum Wan', value: 'ptw' },
-          { text: 'Phasi Charoen', value: 'pscr' },
-          { text: 'Phaya Thai', value: 'pyt' },
-          { text: 'Phra Khanong', value: 'pkn' },
-          { text: 'Phra Nakhon', value: 'pn' },
-          { text: 'Pom Prap Sattru Phai', value: 'ppstp' },
-          { text: 'Prawet', value: 'pw' },
-          { text: 'Rat Burana', value: 'rbrn' },
-          { text: 'Ratchathewi', value: 'rctw' },
-          { text: 'Sai Mai', value: 'sm' },
-          { text: 'Samphanthawong', value: 'sptw' },
-          { text: 'Saphan Sung', value: 'sps' },
-          { text: 'Sathon', value: 'st' },
-          { text: 'Suan Luang', value: 'sl' },
-          { text: 'Taling Chan', value: 'tlc' },
-          { text: 'Thawi Watthana', value: 'twwtn' },
-          { text: 'Thon Buri', value: 'tbr' },
-          { text: 'Thung Khru', value: 'tk' },
-          { text: 'Wang Thonglang', value: 'wtl' },
-          { text: 'Watthana', value: 'wtn' },
-          { text: 'Yan Nawa', value: 'ynw' },
+      district: "all",
+      options2: [
+        { text: "All", value: "all" },
+        { text: "Bang Bon", value: "bb" },
+        { text: "Bang Kapi", value: "bkp" },
+        { text: "Bang Khen", value: "bk" },
+        { text: "Bang Kho Laem", value: "bkl" },
+        { text: "Bang Khun Thian", value: "bkt" },
+        { text: "Bang Na", value: "bn" },
+        { text: "Bang Phlat", value: "bp" },
+        { text: "Bang Rak", value: "br" },
+        { text: "Bang Sue", value: "bs" },
+        { text: "Bangkok Noi", value: "bkn" },
+        { text: "Bangkok Yai", value: "bky" },
+        { text: "Bueng Kum", value: "bku" },
+        { text: "Chom Thong", value: "ct" },
+        { text: "Din Daeng", value: "dd" },
+        { text: "Don Mueang", value: "dm" },
+        { text: "Dusit", value: "ds" },
+        { text: "Huai Khwang", value: "hk" },
+        { text: "Khan Na Yao", value: "kny" },
+        { text: "Khlong Sam Wa", value: "ksw" },
+        { text: "Khlong San", value: "ks" },
+        { text: "Khlong Toei", value: "kt" },
+        { text: "Lak Si", value: "ls" },
+        { text: "Lat Krabang", value: "lkb" },
+        { text: "Lat Phrao", value: "lp" },
+        { text: "Min Buri", value: "mbr" },
+        { text: "Nong Chok", value: "nc" },
+        { text: "Nong Khaem", value: "nk" },
+        { text: "Pathum Wan", value: "ptw" },
+        { text: "Phasi Charoen", value: "pscr" },
+        { text: "Phaya Thai", value: "pyt" },
+        { text: "Phra Khanong", value: "pkn" },
+        { text: "Phra Nakhon", value: "pn" },
+        { text: "Pom Prap Sattru Phai", value: "ppstp" },
+        { text: "Prawet", value: "pw" },
+        { text: "Rat Burana", value: "rbrn" },
+        { text: "Ratchathewi", value: "rctw" },
+        { text: "Sai Mai", value: "sm" },
+        { text: "Samphanthawong", value: "sptw" },
+        { text: "Saphan Sung", value: "sps" },
+        { text: "Sathon", value: "st" },
+        { text: "Suan Luang", value: "sl" },
+        { text: "Taling Chan", value: "tlc" },
+        { text: "Thawi Watthana", value: "twwtn" },
+        { text: "Thon Buri", value: "tbr" },
+        { text: "Thung Khru", value: "tk" },
+        { text: "Wang Thonglang", value: "wtl" },
+        { text: "Watthana", value: "wtn" },
+        { text: "Yan Nawa", value: "ynw" }
+      ],
+      district2: "st",
+      options4: [
+        { text: "All", value: "all" },
+        { text: "Bang Bon", value: "bb" },
+        { text: "Bang Kapi", value: "bkp" },
+        { text: "Bang Khen", value: "bk" },
+        { text: "Bang Kho Laem", value: "bkl" },
+        { text: "Bang Khun Thian", value: "bkt" },
+        { text: "Bang Na", value: "bn" },
+        { text: "Bang Phlat", value: "bp" },
+        { text: "Bang Rak", value: "br" },
+        { text: "Bang Sue", value: "bs" },
+        { text: "Bangkok Noi", value: "bkn" },
+        { text: "Bangkok Yai", value: "bky" },
+        { text: "Bueng Kum", value: "bku" },
+        { text: "Chom Thong", value: "ct" },
+        { text: "Din Daeng", value: "dd" },
+        { text: "Don Mueang", value: "dm" },
+        { text: "Dusit", value: "ds" },
+        { text: "Huai Khwang", value: "hk" },
+        { text: "Khan Na Yao", value: "kny" },
+        { text: "Khlong Sam Wa", value: "ksw" },
+        { text: "Khlong San", value: "ks" },
+        { text: "Khlong Toei", value: "kt" },
+        { text: "Lak Si", value: "ls" },
+        { text: "Lat Krabang", value: "lkb" },
+        { text: "Lat Phrao", value: "lp" },
+        { text: "Min Buri", value: "mbr" },
+        { text: "Nong Chok", value: "nc" },
+        { text: "Nong Khaem", value: "nk" },
+        { text: "Pathum Wan", value: "ptw" },
+        { text: "Phasi Charoen", value: "pscr" },
+        { text: "Phaya Thai", value: "pyt" },
+        { text: "Phra Khanong", value: "pkn" },
+        { text: "Phra Nakhon", value: "pn" },
+        { text: "Pom Prap Sattru Phai", value: "ppstp" },
+        { text: "Prawet", value: "pw" },
+        { text: "Rat Burana", value: "rbrn" },
+        { text: "Ratchathewi", value: "rctw" },
+        { text: "Sai Mai", value: "sm" },
+        { text: "Samphanthawong", value: "sptw" },
+        { text: "Saphan Sung", value: "sps" },
+        { text: "Sathon", value: "st" },
+        { text: "Suan Luang", value: "sl" },
+        { text: "Taling Chan", value: "tlc" },
+        { text: "Thawi Watthana", value: "twwtn" },
+        { text: "Thon Buri", value: "tbr" },
+        { text: "Thung Khru", value: "tk" },
+        { text: "Wang Thonglang", value: "wtl" },
+        { text: "Watthana", value: "wtn" },
+        { text: "Yan Nawa", value: "ynw" }
+      ],
 
-        ],
-               district2: 'st',
-         options4:[
-          { text: 'All', value: 'all' },
-          { text: 'Bang Bon', value: 'bb' },
-          { text: 'Bang Kapi', value: 'bkp' },
-          { text: 'Bang Khen', value: 'bk' },
-          { text: 'Bang Kho Laem', value: 'bkl' },
-          { text: 'Bang Khun Thian', value: 'bkt' },
-          { text: 'Bang Na', value: 'bn' },
-          { text: 'Bang Phlat', value: 'bp' },
-          { text: 'Bang Rak', value: 'br' },
-          { text: 'Bang Sue', value: 'bs' },
-          { text: 'Bangkok Noi', value: 'bkn' },
-          { text: 'Bangkok Yai', value: 'bky' },
-          { text: 'Bueng Kum', value: 'bku' },
-          { text: 'Chom Thong', value: 'ct' },
-          { text: 'Din Daeng', value: 'dd' },
-          { text: 'Don Mueang', value: 'dm' },
-          { text: 'Dusit', value: 'ds' },
-          { text: 'Huai Khwang', value: 'hk' },
-          { text: 'Khan Na Yao', value: 'kny' },
-          { text: 'Khlong Sam Wa', value: 'ksw' },
-          { text: 'Khlong San', value: 'ks' },
-          { text: 'Khlong Toei', value: 'kt' },
-          { text: 'Lak Si', value: 'ls' },
-          { text: 'Lat Krabang', value: 'lkb' },
-          { text: 'Lat Phrao', value: 'lp' },
-          { text: 'Min Buri', value: 'mbr' },
-          { text: 'Nong Chok', value: 'nc' },
-          { text: 'Nong Khaem', value: 'nk' },
-          { text: 'Pathum Wan', value: 'ptw' },
-          { text: 'Phasi Charoen', value: 'pscr' },
-          { text: 'Phaya Thai', value: 'pyt' },
-          { text: 'Phra Khanong', value: 'pkn' },
-          { text: 'Phra Nakhon', value: 'pn' },
-          { text: 'Pom Prap Sattru Phai', value: 'ppstp' },
-          { text: 'Prawet', value: 'pw' },
-          { text: 'Rat Burana', value: 'rbrn' },
-          { text: 'Ratchathewi', value: 'rctw' },
-          { text: 'Sai Mai', value: 'sm' },
-          { text: 'Samphanthawong', value: 'sptw' },
-          { text: 'Saphan Sung', value: 'sps' },
-          { text: 'Sathon', value: 'st' },
-          { text: 'Suan Luang', value: 'sl' },
-          { text: 'Taling Chan', value: 'tlc' },
-          { text: 'Thawi Watthana', value: 'twwtn' },
-          { text: 'Thon Buri', value: 'tbr' },
-          { text: 'Thung Khru', value: 'tk' },
-          { text: 'Wang Thonglang', value: 'wtl' },
-          { text: 'Watthana', value: 'wtn' },
-          { text: 'Yan Nawa', value: 'ynw' },
+      year: "2018",
+      options3: [
+        { text: "2010", value: "2010" },
+        { text: "2011", value: "2011" },
+        { text: "2012", value: "2012" },
+        { text: "2013", value: "2013" },
+        { text: "2014", value: "2014" },
+        { text: "2015", value: "2015" },
+        { text: "2016", value: "2016" },
+        { text: "2017", value: "2017" },
+        { text: "2018", value: "2018" }
+      ],
 
-        ],
-
-
-         year: '2018',
-        options3:[
-          { text: '2010', value: '2010' },
-          { text: '2011', value: '2011' },
-          { text: '2012', value: '2012' },
-          { text: '2013', value: '2013' },
-          { text: '2014', value: '2014' },
-          { text: '2015', value: '2015' },
-          { text: '2016', value: '2016' },
-          { text: '2017', value: '2017' },
-          { text: '2018', value: '2018' },
-
-        ],
-
-
-
-          bar:{
+      bar: {
         chartOptions: {
           chart: {
-             type: 'column',
+            type: "column",
             height: 300,
             style: { fontFamily: "Montserrat" }
           },
@@ -243,27 +272,18 @@ export default {
           //   }
           // },
 
- xAxis: {
-        categories: [
-            'All',
-            'Sathon'
-        ]},
+          xAxis: {
+            categories: ["All", "Sathon"]
+          },
 
           series: [
             {
               name: "Selling price",
-              data: [
-                439340,
-                525030,
-              ]
+              data: [439340, 525030]
             },
             {
               name: "Rental price",
-              data: [
-                249160,
-                240640,
-               
-              ]
+              data: [249160, 240640]
             }
           ],
 
@@ -323,29 +343,11 @@ export default {
           series: [
             {
               name: "All",
-              data: [
-                39,
-                30,
-                17,
-                12,
-                31,
-                11,
-                13,
-                15
-              ]
+              data: [39, 30, 17, 12, 31, 11, 13, 15]
             },
             {
               name: "Sathon",
-              data: [
-                24,
-                22,
-                29,
-                23,
-                32,
-                30,
-                35,
-                21
-              ]
+              data: [24, 22, 29, 23, 32, 30, 35, 21]
             }
           ],
 
@@ -370,87 +372,106 @@ export default {
 
       solidGauge: {
         chart: {
-          type: "solidgauge",
+          type: "gauge",
+          plotBackgroundColor: null,
+          plotBackgroundImage: null,
+          plotBorderWidth: 0,
+          plotShadow: false,
           style: {
-              fontFamily: "Montserrat",
-              fontSize: 15
-            },
+            fontFamily: "Montserrat",
+            fontSize: 15
+          },
           height: 410
         },
         title: {
-          text: "Overall Price-to-rent ratio",
-          // style: {
-          //     fontSize: 15
-          //   },
+          text: "Overall Price-to-rent ratio"
         },
-        // subtitle:{
-        //   text: "Yellow - Undervaluation ,Green - Good , Red - Overvaluation"
-        // },
         tooltip: {
           enabled: false
         },
         pane: {
-          startAngle: -90,
-          endAngle: 90,
-          background: {
-            backgroundColor:
-              (Highcharts.theme && Highcharts.theme.background2) || "#EEE",
-            innerRadius: "60%",
-            outerRadius: "100%",
-            shape: "arc"
-          }
+          startAngle: -150,
+          endAngle: 150,
+          background: [
+            {
+              backgroundColor: {
+                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                stops: [[0, "#FFF"], [1, "#333"]]
+              },
+              borderWidth: 0,
+              outerRadius: "109%"
+            },
+            {
+              backgroundColor: {
+                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                stops: [[0, "#333"], [1, "#FFF"]]
+              },
+              borderWidth: 1,
+              outerRadius: "107%"
+            },
+            {
+              // default background
+            },
+            {
+              backgroundColor: "#DDD",
+              borderWidth: 0,
+              outerRadius: "105%",
+              innerRadius: "103%"
+            }
+          ]
         },
+
         // the value axis
         yAxis: {
           min: 0,
-          max: 30,
-          stops: [
-            [0.1, "#DDDF0D"], // yellow
-            [0.5, "#55BF3B"], // green
-            [0.9, "#DF5353"] // red
-          ],
-          lineWidth: 0,
-          minorTickInterval: null,
-          tickAmount: 2,
-          title: {
-            y: -60
-          },
+          max: 20,
+
+          minorTickInterval: "auto",
+          minorTickWidth: 1,
+          minorTickLength: 10,
+          minorTickPosition: "inside",
+          minorTickColor: "#666",
+
+          tickPixelInterval: 30,
+          tickWidth: 2,
+          tickPosition: "inside",
+          tickLength: 10,
+          tickColor: "#666",
           labels: {
-            y: 16
-          }
+            step: 2,
+            rotation: "auto"
+          },
+          title: {
+            text: ""
+          },
+          plotBands: [
+            {
+              from: 0,
+              to: 4,
+              color: "#DF5353" // red
+            },
+            {
+              from: 4,
+              to: 16,
+              color: "#55BF3B" // green
+            },
+            {
+              from: 16,
+              to: 20,
+              color: "#DF5353" // red
+            }
+          ]
         },
+
         series: [
           {
             name: "Speed",
-            data: [14],
-            dataLabels: {
-              y: -45,
-              borderWidth: 0,
-              useHTML: true,
-              format:
-                '<div style="text-align:center"><span style="font-size:25px;color:' +
-                ((Highcharts.theme && Highcharts.theme.contrastTextColor) ||
-                  "black") +
-                '">{y}</span><br/>' +
-                '<span style="font-size:12px;color:silver"></span></div>'
-            },
+            data: [8],
             tooltip: {
               valueSuffix: ""
             }
-          },
-      
-        ],
-
-        name: 'Undervaluation',
-        data: [{
-          name: 'undervaluation',
-          // radius: 100,
-          // innerRadius: 75,
-          // y: 0
-        }],
-        marker: {
-          symbol: 'square'
-        }
+          }
+        ]
       },
 
       bkkmap: {
@@ -550,6 +571,16 @@ export default {
         }
       }
     };
+  },
+  methods: {
+    toggleClass: function(event) {
+      // Check value
+      if (this.isActive) {
+        this.isActive = false;
+      } else {
+        this.isActive = true;
+      }
+    }
   }
 };
 </script>
@@ -567,5 +598,12 @@ export default {
 .highcharts-yaxis-grid .highcharts-grid-line {
   display: none;
 } */
-
+#house {
+  background-color: lightgray;
+  border-style: none;
+}
+#condo {
+  background-color: navy;
+  border-style: none;
+}
 </style>
