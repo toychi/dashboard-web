@@ -6,6 +6,12 @@ import { worldmap } from "./assets/worldmap";
 import { thaimap } from "./assets/th-all";
 import mapInit from "highcharts/modules/map";
 import Highcharts from "highcharts";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import * as uiv from 'uiv';
+
+Vue.use(uiv);
+
+import 'vue-multiselect/dist/vue-multiselect.min.css';
 
 import PaperDashboard from "./plugins/paperDashboard";
 import "vue-notifyjs/themes/default.css";

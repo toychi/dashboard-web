@@ -1374,9 +1374,10 @@ boolbase@^1.0.0, boolbase@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
 
-bootstrap-select@^1.13.5:
-  version "1.13.5"
-  resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.13.5.tgz#12f000b25a95ed642fe371ae9e311d3afbb8c53f"
+bootstrap-select@^1.13.9:
+  version "1.13.9"
+  resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.13.9.tgz#c3c812f862785f642413c8ca6988606ca30dda3d"
+  integrity sha512-5k+FQP2BmV/Sde4eLZa0LWARXAfC/bAO6cRByiSEpVr7BEMzc6FzC4ca5d28Y00Vmu2a+3kGqMweGz0Hm8/47w==
 
 bootstrap-vue@^2.0.0-rc.11:
   version "2.0.0-rc.11"
@@ -6765,6 +6766,13 @@ uglify-js@3.4.x:
     commander "~2.17.1"
     source-map "~0.6.1"
 
+uiv@^0.31.5:
+  version "0.31.5"
+  resolved "https://registry.yarnpkg.com/uiv/-/uiv-0.31.5.tgz#bfb87833b9abb59d8f0bb4f630943449b053b733"
+  integrity sha512-VcizUxkJCr4XhnFJ3KWCuiVaDvU3H5yDLX4F1yhrmK5hz+2+OIuCShJd6Is366oJdJagoh42sjWQqZL74uMEmw==
+  dependencies:
+    vue-functional-data-merge "^2.0.3"
+
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/unicode-canonical-property-names-ecmascript/-/unicode-canonical-property-names-ecmascript-1.0.4.tgz#2619800c4c825800efdd8343af7dd9933cbe2818"
@@ -6961,7 +6969,7 @@ vue-eslint-parser@^2.0.3:
     esquery "^1.0.0"
     lodash "^4.17.4"
 
-vue-functional-data-merge@^2.0.5:
+vue-functional-data-merge@^2.0.3, vue-functional-data-merge@^2.0.5:
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/vue-functional-data-merge/-/vue-functional-data-merge-2.0.7.tgz#bdee655181eacdcb1f96ce95a4cc14e75313d1da"
 
@@ -6978,6 +6986,11 @@ vue-loader@^15.4.2:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
+
+vue-multiselect@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/vue-multiselect/-/vue-multiselect-2.1.4.tgz#2a7b4958b75881ed34db45532974c36f9abfbc67"
+  integrity sha512-ryd2Ybl56LE81IxlwbZUo4gAWnUSG45iUGX4KgVwsteitK2R+cOLwJaJescobpIDJnVlVorRUnX5u7my1vBu2w==
 
 vue-notifyjs@^0.3.0:
   version "0.3.0"

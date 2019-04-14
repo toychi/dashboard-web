@@ -6,6 +6,17 @@
   {{ info }}
     </div>-->
     <div class="col-sm-12">
+      <label class="typo__label">Select with search</label>
+      <multiselect
+        v-model="value"
+        :options="options"
+        placeholder="Select one"
+        label="name"
+        track-by="name"
+      ></multiselect>
+      <pre class="language-json"><code>{{ value }}</code></pre>
+    </div>
+    <div class="col-sm-12">
       <!-- <select class="selectpicker" data-live-search = "true">
   <option>Bang Kapi</option>
   <option>Bang Khae</option>
@@ -63,16 +74,14 @@
     </div>
     <div class="col-sm-7">
       <card>
-        <highcharts
-          class="map"
-          :constructor-type="'mapChart'"
-          :options="bkkmap.chartOptions"
-          :updateArgs="updateArgs"
-        ></highcharts>
+        <highcharts class="map" :constructor-type="'mapChart'" :options="bkkmap.chartOptions"></highcharts>
       </card>
     </div>
     <div class="col-sm-5">
       <high-chart-card :chartOptions="barchart.chartOptions"></high-chart-card>
+    </div>
+    <div class="col-sm-8">
+      <high-chart-card :chartOptions="chartDistribution.chartOptions"></high-chart-card>
     </div>
   </div>
 </template>
@@ -88,7 +97,11 @@ import Chartist from "chartist";
 import More from "highcharts/highcharts-more";
 import Highcharts from "highcharts";
 import axios from "axios";
+import Multiselect from "vue-multiselect";
+import histogram from "highcharts/modules/histogram-bellcurve.js";
+import { thaimap } from "../assets/th-all";
 
+histogram(Highcharts);
 More(Highcharts);
 
 var categories = [
@@ -148,7 +161,8 @@ export default {
   components: {
     StatsCard,
     ChartCard,
-    HighChartCard
+    HighChartCard,
+    Multiselect
   },
 
   // mounted () {
@@ -162,8 +176,14 @@ export default {
 
   data() {
     return {
-      //       info: null
-      //     ,
+      value: { name: 'Vue.js', language: 'JavaScript' },
+      options: [
+        { name: 'Vue.js', language: 'JavaScript' },
+        { name: 'Rails', language: 'Ruby' },
+        { name: 'Sinatra', language: 'Ruby' },
+        { name: 'Laravel', language: 'PHP' },
+        { name: 'Phoenix', language: 'Elixir' }
+      ],
 
       barchart: {
         chartOptions: {
@@ -189,96 +209,212 @@ export default {
           ]
         }
       },
-
-      // barchart:{
-      //  chartOptions: {
-      //     chart: {
-      //         type: 'bar',
-      //         height: 650,
-      //         style: {
-      // 				fontFamily: 'Montserrat'}
-      //     },
-      //     title: {
-      //         text: 'Average Selling price and Rental price'
-      //     },
-      //     subtitle: {
-      //         text: ''
-      //     },
-      //     xAxis: [{
-      //         categories: categories,
-      //         reversed: false,
-      //         labels: {
-      //             step: 1
-      //         }
-      //     }, { // mirror axis on right side
-      //         opposite: true,
-      //         reversed: false,
-      //         categories: categories,
-      //         linkedTo: 0,
-      //         labels: {
-      //             step: 1
-      //         }
-      //     }],
-      //     yAxis: {
-      //         title: {
-      //             text: null
-      //         },
-      //         labels: {
-      //             formatter: function () {
-      //                 return Math.abs(this.value) + '';
-      //             }
-      //         }
-      //     },
-
-      //     plotOptions: {
-      //         series: {
-      //             stacking: 'normal'
-      //         }
-      //     },
-
-      //     tooltip: {
-      //         formatter: function () {
-      //             return '<b>' + this.series.name + ', price ' + this.point.category + '</b><br/>' +
-      //                 'Price: ' + Highcharts.numberFormat(Math.abs(this.point.y), 0);
-      //         }
-      //     },
-
-      //     series: [{
-      //         name: 'Selling',
-      //         data: [
-      //             -2.2, -2.1, -2.2, -2.4, -2.4,
-      //             -2.7, -3.0, -3.3, -3.2, -2.4,
-      //             -2.9, -3.5, -4.4, -4.1, -2.4,
-      //             -3.4, -2.7, -2.3, -2.2, -2.4,
-      //             -1.6, -0.6, -0.3, -0.0, -2.4,
-      //             -0.0, -1.6, -0.6, -0.3,  -2.4,
-      //             -0.0, -1.6, -0.6, -0.3, -0.0,
-      //              -1.6, -0.6, -0.3, -0.0, -2.4,
-      //             -0.0, -1.6, -0.6, -0.3,  -2.4,
-      //             -0.0, -1.6, -0.6, -0.3, -0.0,
-
-      //         ]
-      //     }, {
-      //         name: 'Rental',
-      //         data: [
-      //             2.1, 2.0, 2.1, 2.3, 2.6,
-      //             2.9, 3.2, 3.1, 2.9, 3.4,
-      //             4.3, 4.0, 3.5, 2.9, 2.5,
-      //             2.7, 2.2, 1.1, 0.6, 0.2,
-      //            2.1, 2.0, 2.1, 2.3, 2.6,
-      //             2.9, 3.2, 3.1, 2.9, 3.4,
-      //             4.3, 4.0, 3.5, 2.9, 2.5,
-      //             2.7, 2.2, 1.1, 0.6, 0.2,
-      //              2.1, 2.0, 2.1, 2.3, 2.6,
-      //             2.9, 3.2, 3.1, 2.9, 3.4,
-      //         ]
-      //     }]
-      // }},
+      chartDistribution: {
+        chartOptions: {
+          title: {
+            text: "Highcharts Histogram"
+          },
+          xAxis: [
+            {
+              title: { text: "Data" },
+              alignTicks: false
+            },
+            {
+              title: { text: "Histogram" },
+              alignTicks: false,
+              opposite: true
+            }
+          ],
+          yAxis: [
+            {
+              title: { text: "Data" }
+            },
+            {
+              title: { text: "Histogram" },
+              opposite: true
+            }
+          ],
+          series: [
+            {
+              name: "Histogram",
+              type: "histogram",
+              xAxis: 1,
+              yAxis: 1,
+              baseSeries: "s1",
+              zIndex: -1
+            },
+            {
+              name: "Data",
+              type: "scatter",
+              data: [
+                3.5,
+                3,
+                3.2,
+                3.1,
+                3.6,
+                3.9,
+                3.4,
+                3.4,
+                2.9,
+                3.1,
+                3.7,
+                3.4,
+                3,
+                3,
+                4,
+                4.4,
+                3.9,
+                3.5,
+                3.8,
+                3.8,
+                3.4,
+                3.7,
+                3.6,
+                3.3,
+                3.4,
+                3,
+                3.4,
+                3.5,
+                3.4,
+                3.2,
+                3.1,
+                3.4,
+                4.1,
+                4.2,
+                3.1,
+                3.2,
+                3.5,
+                3.6,
+                3,
+                3.4,
+                3.5,
+                2.3,
+                3.2,
+                3.5,
+                3.8,
+                3,
+                3.8,
+                3.2,
+                3.7,
+                3.3,
+                3.2,
+                3.2,
+                3.1,
+                2.3,
+                2.8,
+                2.8,
+                3.3,
+                2.4,
+                2.9,
+                2.7,
+                2,
+                3,
+                2.2,
+                2.9,
+                2.9,
+                3.1,
+                3,
+                2.7,
+                2.2,
+                2.5,
+                3.2,
+                2.8,
+                2.5,
+                2.8,
+                2.9,
+                3,
+                2.8,
+                3,
+                2.9,
+                2.6,
+                2.4,
+                2.4,
+                2.7,
+                2.7,
+                3,
+                3.4,
+                3.1,
+                2.3,
+                3,
+                2.5,
+                2.6,
+                3,
+                2.6,
+                2.3,
+                2.7,
+                3,
+                2.9,
+                2.9,
+                2.5,
+                2.8,
+                3.3,
+                2.7,
+                3,
+                2.9,
+                3,
+                3,
+                2.5,
+                2.9,
+                2.5,
+                3.6,
+                3.2,
+                2.7,
+                3,
+                2.5,
+                2.8,
+                3.2,
+                3,
+                3.8,
+                2.6,
+                2.2,
+                3.2,
+                2.8,
+                2.8,
+                2.7,
+                3.3,
+                3.2,
+                2.8,
+                3,
+                2.8,
+                3,
+                2.8,
+                3.8,
+                2.8,
+                2.8,
+                2.6,
+                3,
+                3.4,
+                3.1,
+                3,
+                3.1,
+                3.1,
+                3.1,
+                2.7,
+                3.2,
+                3.3,
+                3,
+                2.5,
+                3,
+                3.4,
+                3
+              ],
+              id: "s1",
+              marker: {
+                radius: 1.5
+              }
+            }
+          ]
+        }
+      },
 
       bkkmap: {
         chartOptions: {
           chart: {
-            map: "my",
+            map: {
+              title: "Bangkok",
+              type: "FeatureCollection",
+              features: [thaimap.features[0]]
+            },
             height: 500,
             style: {
               fontFamily: "Montserrat"

@@ -48,7 +48,7 @@ export default {
       type: String,
       default: "deepsea",
       validator: value => {
-        let acceptedValues = ["white", "black", "darkblue, deepsea"];
+        let acceptedValues = ["white", "black", "darkblue", "deepsea"];
         return acceptedValues.indexOf(value) !== -1;
       }
     },
