@@ -8,6 +8,7 @@ import mapInit from "highcharts/modules/map";
 import Highcharts from "highcharts";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as uiv from 'uiv';
+import store from '@/store'
 
 Vue.use(uiv);
 
@@ -36,5 +37,6 @@ Highcharts.maps["my"] = {
 /* eslint-disable no-new */
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount("#app");

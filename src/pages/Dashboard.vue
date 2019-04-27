@@ -38,8 +38,7 @@
             :preselect-first="true"
             :max="5"
             @close="fetchData(value234)"
-          >
-          </multiselect>
+          ></multiselect>
         </div>
       </div>
       <div class="row">
@@ -82,6 +81,9 @@ import More from "highcharts/highcharts-more";
 import Highcharts from "highcharts";
 import Multiselect from "vue-multiselect";
 import Axios from "axios";
+import { bts } from "../assets/mrt_line";
+import * as topojson from "topojson-client";
+import { thaimap } from "../assets/th-all";
 
 More(Highcharts);
 
@@ -106,6 +108,10 @@ export default {
    */
   data() {
     return {
+      hh: Highcharts.geojson(
+        topojson.feature(bts, bts.objects.bts_line),
+        "mapline"
+      ),
       value234: null,
       options234: [
         { name: "All", value: "all" },
@@ -297,8 +303,9 @@ export default {
             }
           },
           title: {
-            text: "Price to Rent Ratio of Bangkok "
+            text: "Average price by districts"
           },
+          styledMode: true,
           mapNavigation: {
             enabled: true,
             buttonOptions: {
@@ -306,15 +313,16 @@ export default {
             }
           },
           colorAxis: {
-            // min: 0
-            // stops:[0, 'grey']
+
           },
+          threshold: -1,
           series: [
             {
               name: "Average price by districts",
+              type: "map",
               states: {
                 hover: {
-                  color: "#39B7CD	"
+                  color: "#39B7CD"
                 }
               },
               dataLabels: {
@@ -322,7 +330,18 @@ export default {
                 format: "{point.name}"
               },
               allAreas: true,
-              data: []
+              data: [["pn", 1], ["sm", 6]]
+            },
+            {
+              name: "BTS",
+              type: "mapline",
+              nullColor: 'green',
+              mapData: Highcharts.geojson(
+                topojson.feature(bts, bts.objects.bts_line),
+                "mapline"
+              ),
+              lineWidth: 2,
+              colorAxis: false
             }
           ]
         }

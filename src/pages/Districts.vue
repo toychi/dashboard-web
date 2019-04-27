@@ -1,10 +1,6 @@
 
 <template>
   <div class="row">
-    <!-- 
-  <div>
-  {{ info }}
-    </div>-->
     <div class="col-sm-12">
       <label class="typo__label">Select with search</label>
       <multiselect
@@ -13,68 +9,20 @@
         placeholder="Select one"
         label="name"
         track-by="name"
+        @close="fetchData()"
+        @open="changeVisibility()"
       ></multiselect>
-      <pre class="language-json"><code>{{ value }}</code></pre>
     </div>
-    <div class="col-sm-12">
-      <!-- <select class="selectpicker" data-live-search = "true">
-  <option>Bang Kapi</option>
-  <option>Bang Khae</option>
-  <option>Bang Khen</option>
-      </select>-->
-      <!-- 'Bang Kapi',
-		'Bang Khae',	
-		'Bang Khen',
-		'Bang Kho Laem',	
-		'Bang Khun Thian',	
-		'Bang Na',	
-		'Bang Phlat',	
-		'Bang Rak',	
-		'Bang Sue',	
-		'Bangkok Noi',	
-		'Bangkok Yai',	
-		'Bueng Kum',	
-		'Chatuchak',	
-		'Chom Thong',	
-		'Din Daeng',	
-		'Don Mueang',	
-		'Dusit',	
-		'Huai Khwang',	
-		'Khan Na Yao',	
-		'Khlong Sam Wa',	
-		'Khlong San',	
-		'Khlong Toei',
-		'Lak Si',	
-		'Lat Krabang'	,
-		'Lat Phrao',	
-		'Min Buri',	
-		'Nong Chok',	
-		'Nong Khaem',	
-		'Pathum Wan',	
-		'Phasi Charoen',	
-		'Phaya Thai',	
-		'Phra Khanong',	
-		'Phra Nakhon',	
-		'Pom Prap Sattru Phai',	
-		'Prawet',	
-		'Rat Burana',	
-		'Ratchathewi',	
-		'Sai Mai',	
-		'Samphanthawong',	
-		'Saphan Sung',	
-		'Sathon',	
-		'Suan Luang',	
-		'Taling Chan',	
-		'Thawi Watthana',	
-		'Thon Buri',	
-		'Thung Khru',	
-		'Wang Thonglang',	
-		'Watthana',
-      'Yan Nawa'-->
-    </div>
+    <div class="col-sm-12"></div>
     <div class="col-sm-7">
       <card>
-        <highcharts class="map" :constructor-type="'mapChart'" :options="bkkmap.chartOptions"></highcharts>
+        <highcharts
+          v-if="chartVisibility"
+          class="map"
+          :constructor-type="'mapChart'"
+          :options="bkkmap.chartOptions"
+          :updateArgs="updateArgs"
+        ></highcharts>
       </card>
     </div>
     <div class="col-sm-5">
@@ -86,76 +34,19 @@
   </div>
 </template>
 
-
-
-
-
 <script>
 import { StatsCard, ChartCard, HighChartCard } from "@/components/index";
 import Card from "@/components/Cards/Card.vue";
 import Chartist from "chartist";
 import More from "highcharts/highcharts-more";
 import Highcharts from "highcharts";
-import axios from "axios";
+import Axios from "axios";
 import Multiselect from "vue-multiselect";
 import histogram from "highcharts/modules/histogram-bellcurve.js";
 import { thaimap } from "../assets/th-all";
 
 histogram(Highcharts);
 More(Highcharts);
-
-var categories = [
-  "Bang Bon",
-  "Bang Kapi",
-  "Bang Khae",
-  "Bang Khen",
-  "Bang Kho Laem",
-  "Bang Khun Thian",
-  "Bang Na",
-  "Bang Phlat",
-  "Bang Rak",
-  "Bang Sue",
-  "Bangkok Noi",
-  "Bangkok Yai",
-  "Bueng Kum",
-  "Chatuchak",
-  "Chom Thong",
-  "Din Daeng",
-  "Don Mueang",
-  "Dusit",
-  "Huai Khwang",
-  "Khan Na Yao",
-  "Khlong Sam Wa",
-  "Khlong San",
-  "Khlong Toei",
-  "Lak Si",
-  "Lat Krabang",
-  "Lat Phrao",
-  "Min Buri",
-  "Nong Chok",
-  "Nong Khaem",
-  "Pathum Wan",
-  "Phasi Charoen",
-  "Phaya Thai",
-  "Phra Khanong",
-  "Phra Nakhon",
-  "Pom Prap Sattru Phai",
-  "Prawet",
-  "Rat Burana",
-  "Ratchathewi",
-  "Sai Mai",
-  "Samphanthawong",
-  "Saphan Sung",
-  "Sathon",
-  "Suan Luang",
-  "Taling Chan",
-  "Thawi Watthana",
-  "Thon Buri",
-  "Thung Khru",
-  "Wang Thonglang",
-  "Watthana",
-  "Yan Nawa"
-];
 
 export default {
   components: {
@@ -165,24 +56,76 @@ export default {
     Multiselect
   },
 
-  // mounted () {
-  //   axios
-  //     .get('https://api.coindesk.com/v1/bpi/currentprice.json')
-  //     .then(response => (this.info = response))
-  // },
+  mounted() {
+    Axios.post("http://0.0.0.0:4000/saledistribution", {
+      districtcode: 50
+    }).then(response => {
+      var k = [];
+      for (var i = 0; i < response.data.length; i++) {
+        k.push(response.data[i]["priceint"]);
+      }
+      this.chartDistribution.chartOptions.series[1].data = k;
+    });
+  },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
    */
-
   data() {
     return {
-      value: { name: 'Vue.js', language: 'JavaScript' },
+      sample: "null",
+      chartVisibility: true,
+      updateArgs: [true, true, { duration: 1000 }],
+      value: { name: "Phra Nakhon", value: 1 },
       options: [
-        { name: 'Vue.js', language: 'JavaScript' },
-        { name: 'Rails', language: 'Ruby' },
-        { name: 'Sinatra', language: 'Ruby' },
-        { name: 'Laravel', language: 'PHP' },
-        { name: 'Phoenix', language: 'Elixir' }
+        { name: "Bang Bon", value: 50 },
+        { name: "Bang Kapi", value: 6 },
+        { name: "Bang Khae", value: 40 },
+        { name: "Bang Khen", value: 5 },
+        { name: "Bang Kho Laem", value: 31 },
+        { name: "Bang Khun Thian", value: 21 },
+        { name: "Bang Na", value: 47 },
+        { name: "Bang Phlat", value: 25 },
+        { name: "Bang Rak", value: 4 },
+        { name: "Bang Sue", value: 29 },
+        { name: "Bangkok Noi", value: 20 },
+        { name: "Bangkok Yai", value: 16 },
+        { name: "Bueng Kum", value: 27 },
+        { name: "Chom Thong", value: 35 },
+        { name: "Din Daeng", value: 26 },
+        { name: "Don Mueang", value: 36 },
+        { name: "Dusit", value: 2 },
+        { name: "Huai Khwang", value: 17 },
+        { name: "Khan Na Yao", value: 43 },
+        { name: "Khlong Sam Wa", value: 46 },
+        { name: "Khlong San", value: 18 },
+        { name: "Khlong Toei", value: 33 },
+        { name: "Lak Si", value: 41 },
+        { name: "Lat Krabang", value: 11 },
+        { name: "Lat Phrao", value: 38 },
+        { name: "Min Buri", value: 10 },
+        { name: "Nong Chok", value: 3 },
+        { name: "Nong Khaem", value: 23 },
+        { name: "Pathum Wan", value: 7 },
+        { name: "Phasi Charoen", value: 22 },
+        { name: "Phaya Thai", value: 14 },
+        { name: "Phra Khanong", value: 9 },
+        { name: "Phra Nakhon", value: 1 },
+        { name: "Pom Prap Sattru Phai", value: 8 },
+        { name: "Prawet", value: 32 },
+        { name: "Rat Burana", value: 24 },
+        { name: "Ratchathewi", value: 37 },
+        { name: "Sai Mai", value: 42 },
+        { name: "Samphanthawong", value: 13 },
+        { name: "Saphan Sung", value: 44 },
+        { name: "Sathon", value: 28 },
+        { name: "Suan Luang", value: 34 },
+        { name: "Taling Chan", value: 19 },
+        { name: "Thawi Watthana", value: 48 },
+        { name: "Thon Buri", value: 15 },
+        { name: "Thung Khru", value: 49 },
+        { name: "Wang Thonglang", value: 45 },
+        { name: "Watthana", value: 39 },
+        { name: "Yan Nawa", value: 12 }
       ],
 
       barchart: {
@@ -196,9 +139,8 @@ export default {
             text: "Amount of House and Condominium"
           },
           xAxis: {
-            categories: ["House", "Condomminium"]
+            categories: ["House", "Condominium"]
           },
-
           series: [
             {
               type: "column",
@@ -209,10 +151,11 @@ export default {
           ]
         }
       },
+
       chartDistribution: {
         chartOptions: {
           title: {
-            text: "Highcharts Histogram"
+            text: "Distribution of price"
           },
           xAxis: [
             {
@@ -246,161 +189,10 @@ export default {
             {
               name: "Data",
               type: "scatter",
-              data: [
-                3.5,
-                3,
-                3.2,
-                3.1,
-                3.6,
-                3.9,
-                3.4,
-                3.4,
-                2.9,
-                3.1,
-                3.7,
-                3.4,
-                3,
-                3,
-                4,
-                4.4,
-                3.9,
-                3.5,
-                3.8,
-                3.8,
-                3.4,
-                3.7,
-                3.6,
-                3.3,
-                3.4,
-                3,
-                3.4,
-                3.5,
-                3.4,
-                3.2,
-                3.1,
-                3.4,
-                4.1,
-                4.2,
-                3.1,
-                3.2,
-                3.5,
-                3.6,
-                3,
-                3.4,
-                3.5,
-                2.3,
-                3.2,
-                3.5,
-                3.8,
-                3,
-                3.8,
-                3.2,
-                3.7,
-                3.3,
-                3.2,
-                3.2,
-                3.1,
-                2.3,
-                2.8,
-                2.8,
-                3.3,
-                2.4,
-                2.9,
-                2.7,
-                2,
-                3,
-                2.2,
-                2.9,
-                2.9,
-                3.1,
-                3,
-                2.7,
-                2.2,
-                2.5,
-                3.2,
-                2.8,
-                2.5,
-                2.8,
-                2.9,
-                3,
-                2.8,
-                3,
-                2.9,
-                2.6,
-                2.4,
-                2.4,
-                2.7,
-                2.7,
-                3,
-                3.4,
-                3.1,
-                2.3,
-                3,
-                2.5,
-                2.6,
-                3,
-                2.6,
-                2.3,
-                2.7,
-                3,
-                2.9,
-                2.9,
-                2.5,
-                2.8,
-                3.3,
-                2.7,
-                3,
-                2.9,
-                3,
-                3,
-                2.5,
-                2.9,
-                2.5,
-                3.6,
-                3.2,
-                2.7,
-                3,
-                2.5,
-                2.8,
-                3.2,
-                3,
-                3.8,
-                2.6,
-                2.2,
-                3.2,
-                2.8,
-                2.8,
-                2.7,
-                3.3,
-                3.2,
-                2.8,
-                3,
-                2.8,
-                3,
-                2.8,
-                3.8,
-                2.8,
-                2.8,
-                2.6,
-                3,
-                3.4,
-                3.1,
-                3,
-                3.1,
-                3.1,
-                3.1,
-                2.7,
-                3.2,
-                3.3,
-                3,
-                2.5,
-                3,
-                3.4,
-                3
-              ],
+              data: [1],
               id: "s1",
               marker: {
-                radius: 1.5
+                radius: 2
               }
             }
           ]
@@ -421,16 +213,7 @@ export default {
             }
           },
           title: {
-            text: ""
-          },
-          subtitle: {
-            text: ""
-          },
-          mapNavigation: {
-            enabled: true,
-            buttonOptions: {
-              alignTo: "spacingBox"
-            }
+            text: "Phra Nakhon"
           },
           series: [
             {
@@ -447,21 +230,117 @@ export default {
               showInLegend: false,
               enableMouseTracking: false
             }
-            // {
-            //   type: "mappoint",
-            //   color: Highcharts.getOptions().colors[1],
-            //   data: [
-            //     {
-            //       name: "London",
-            //       lat: 100.7391846704086,
-            //       lon: 13.87445216644475
-            //     }
-            //   ]
-            // }
           ]
         }
+      },
+      d_code: {
+        All: 0,
+        "Bang Bon": 50,
+        "Bang Kapi": 6,
+        "Bang Khae": 40,
+        "Bang Khen": 5,
+        "Bang Kho Laem": 31,
+        "Bang Khun Thian": 21,
+        "Bang Na": 47,
+        "Bang Phlat": 25,
+        "Bang Rak": 4,
+        "Bang Sue": 29,
+        "Bangkok Noi": 20,
+        "Bangkok Yai": 16,
+        "Bueng Kum": 27,
+        "Chom Thong": 35,
+        "Din Daeng": 26,
+        "Don Mueang": 36,
+        Dusit: 2,
+        "Huai Khwang": 17,
+        "Khan Na Yao": 43,
+        "Khlong Sam Wa": 46,
+        "Khlong San": 18,
+        "Khlong Toei": 33,
+        "Lak Si": 41,
+        "Lat Krabang": 11,
+        "Lat Phrao": 38,
+        "Min Buri": 10,
+        "Nong Chok": 3,
+        "Nong Khaem": 23,
+        "Pathum Wan": 7,
+        "Phasi Charoen": 22,
+        "Phaya Thai": 14,
+        "Phra Khanong": 9,
+        "Phra Nakhon": 1,
+        "Pom Prap Sattru Phai": 8,
+        Prawet: 32,
+        "Rat Burana": 24,
+        Ratchathewi: 37,
+        "Sai Mai": 42,
+        Samphanthawong: 13,
+        "Saphan Sung": 44,
+        Sathon: 28,
+        "Suan Luang": 34,
+        "Taling Chan": 19,
+        "Thawi Watthana": 48,
+        "Thon Buri": 15,
+        "Thung Khru": 49,
+        "Wang Thonglang": 45,
+        Watthana: 39,
+        "Yan Nawa": 12
       }
     };
+  },
+  methods: {
+    fetchData: function() {
+      this.chartVisibility = !this.chartVisibility;
+      this.bkkmap = {
+        chartOptions: {
+          chart: {
+            map: {
+              title: "Bangkok",
+              type: "FeatureCollection",
+              features: [thaimap.features[this.value.value - 1]]
+            },
+            height: 500,
+            style: {
+              fontFamily: "Montserrat"
+            }
+          },
+          title: {
+            text: this.value.name
+          },
+          series: [
+            {
+              // Use the gb-all map with no data as a basemap
+              name: "Basemap",
+              borderColor: "#A0A0A0",
+              nullColor: "rgba(200, 200, 200, 0.3)",
+              showInLegend: false
+            },
+            {
+              name: "Separators",
+              type: "mapline",
+              nullColor: "#707070",
+              showInLegend: false,
+              enableMouseTracking: false
+            }
+          ]
+        }
+      };
+      Axios.post("http://0.0.0.0:4000/saledistribution", {
+        districtcode: this.value.value
+      }).then(response => {
+        var k = [];
+        for (var i = 0; i < response.data.length; i++) {
+          if (response.data[i]["priceint"] != null) {
+            k.push(response.data[i]["priceint"]);
+          }
+        }
+        // console.log(k);
+        this.chartDistribution.chartOptions.series[1].data = k.sort((a, b) => a - b);
+        // this.chartDistribution.chartOptions.series[1].data = k;
+      });
+    },
+    changeVisibility: function() {
+      this.chartVisibility = !this.chartVisibility;
+    }
   }
 };
 </script>

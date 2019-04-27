@@ -17,7 +17,7 @@
             <a href="#" class="nav-link">
               <i class="ti-user"></i>
               <p>
-               Chitipat Thabsuwan
+               {{ userName }}
               </p>
             </a>
           </li>
@@ -27,7 +27,7 @@
                      title-classes="nav-link"
                      icon="ti-settings">
             <a class="dropdown-item" href="/stats">User profile</a>
-            <a class="dropdown-item" href="#">Log out</a>
+            <a class="dropdown-item" href="#" @click="logout">Log out</a>
              </drop-down>
         </ul>
       </div>
@@ -39,6 +39,9 @@ export default {
     routeName() {
       const { name } = this.$route;
       return this.capitalizeFirstLetter(name);
+    },
+    userName() {
+      return this.$store.state.jwt.name
     }
   },
   data() {
@@ -61,6 +64,10 @@ export default {
     },
     hideSidebar() {
       this.$sidebar.displaySidebar(false);
+    },
+    logout () {
+      this.$store.dispatch('logout')
+        .then(() => this.$router.push('/login'))
     }
   }
 };

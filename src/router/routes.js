@@ -13,12 +13,27 @@ import Sources from "@/pages/Sources.vue";
 import Districts from "@/pages/Districts.vue";
 import Projects from "@/pages/Projects.vue";
 import Factors from "@/pages/Factors.vue";
+import Login from '@/components/Login'
+import store from '@/store'
 
 const routes = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
   {
     path: "/",
     component: DashboardLayout,
     redirect: "/dashboard",
+    beforeEnter (to, from, next) {
+      if (!store.getters.isAuthenticated) {
+        console.log(store.getters.isAuthenticated)
+        next('/login')
+      } else {
+        next()
+      }
+    },
     children: [
       {
         path: "dashboard",

@@ -5,9 +5,10 @@
         class="map"
         :constructor-type="'mapChart'"
         :options="bkkmap.chartOptions"
-        :updateArgs="updateArgs"
       ></highcharts>
     </card>
+    {{ bkkmap.chartOptions.series }}
+    <button @click="fetchData()">View stat</button>
   </div>
 </template>
 
@@ -82,96 +83,18 @@ export default {
             }
           },
           series: []
-          // series: [
-          //   {
-          //     name: "1",
-          //     data: [
-          //       "pn",
-          //       "ds",
-          //       "nc",
-          //       "br",
-          //       "bk",
-          //       "bkp",
-          //       "ptw",
-          //       "ppstp",
-          //       "pkn",
-          //       "mbr",
-          //       "lkb"
-          //     ].map(function(code) {
-          //       return { code: code };
-          //     })
-          //   },
-          //   {
-          //     name: "2",
-          //     data: [
-          //       "ynw",
-          //       "sptw",
-          //       "pyt",
-          //       "tbr",
-          //       "bky",
-          //       "hk",
-          //       "ks",
-          //       "tlc",
-          //       "bkn",
-          //       "bkt"
-          //     ].map(function(code) {
-          //       return { code: code };
-          //     })
-          //   },
-          //   {
-          //     name: "3",
-          //     data: [
-          //       "pscr",
-          //       "nk",
-          //       "rbrn",
-          //       "bp",
-          //       "dd",
-          //       "bku",
-          //       "st",
-          //       "bs",
-          //       "ctc",
-          //       "bkl"
-          //     ].map(function(code) {
-          //       return { code: code };
-          //     })
-          //   },
-          //   {
-          //     name: "4",
-          //     data: [
-          //       "pw",
-          //       "kt",
-          //       "sl",
-          //       "ct",
-          //       "dm",
-          //       "rctw",
-          //       "lp",
-          //       "wtn",
-          //       "bkh",
-          //       "ls"
-          //     ].map(function(code) {
-          //       return { code: code };
-          //     })
-          //   },
-          //   {
-          //     name: "5",
-          //     data: [
-          //       "sm",
-          //       "kny",
-          //       "sps",
-          //       "wtl",
-          //       "ksw",
-          //       "bn",
-          //       "twwtn",
-          //       "tk",
-          //       "bb"
-          //     ].map(function(code) {
-          //       return { code: code };
-          //     })
-          //   }
-          // ]
         }
       }
     };
+  },
+  methods: {
+    fetchData: function() {
+      Axios.post("http://0.0.0.0:4000/stat", {
+        label: this.bkkmap.chartOptions.series
+      }).then(response => {
+
+      })
+    }
   }
 };
 </script>
