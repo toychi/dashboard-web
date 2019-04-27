@@ -2,69 +2,82 @@
   <div>
     <!-- hightchart -->
     <center>
-      <div class="row">
-        <div class="col-sm-6">
+      <card style="z-index:2">
+        <div class="row">
+          <div class="col-sm-6">
+            <button
+              type="button"
+              v-bind:id="[isActive ? 'house' : 'condo']"
+              @click="toggleClass()"
+              class="btn btn-primary btn-lg btn-block"
+            >House</button>
+          </div>
+          <div class="col-sm-6">
+            <button
+              type="button"
+              v-bind:id="[isActive ? 'condo' : 'house']"
+              @click="isActive = !isActive"
+              class="btn btn-primary btn-lg btn-block"
+            >Condominium</button>
+          </div>
+        </div>
+        <div class="row" id="selectdistrict">
+          <div class="col-sm-2" style="display: flex; align-items: center;">
+            <span style="font-size:18px;">Districts</span>
+          </div>
+          <div class="col-sm-10" id="colFormLabelLg">
+            <multiselect
+              v-model="value234"
+              :options="options234"
+              :multiple="true"
+              :close-on-select="false"
+              :clear-on-select="false"
+              :preserve-search="true"
+              placeholder="Search for districts ..."
+              label="name"
+              track-by="name"
+              :preselect-first="true"
+              :max="5"
+              @close="fetchData(value234)"
+            ></multiselect>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-5">
+            <b-form-select
+              style="border: 2px solid #e8e8e8;"
+              v-model="fromyear"
+              :options="optionsYear"
+            />
+          </div>
+          <span style="font-size:18px;">to</span>
+          <div class="col-sm-5">
+            <b-form-select
+              style="border: 2px solid #e8e8e8;"
+              v-model="toyear"
+              :options="optionsYear"
+            />
+          </div>
           <button
             type="button"
-            v-bind:id="[isActive ? 'house' : 'condo']"
-            @click="toggleClass()"
-            class="btn btn-primary btn-lg btn-block"
-          >House</button>
+            class="btn btn-outline-info"
+            style="text-transform: uppercase;"
+          >submit</button>
         </div>
-        <div class="col-sm-6">
-          <button
-            type="button"
-            v-bind:id="[isActive ? 'condo' : 'house']"
-            @click="isActive = !isActive"
-            class="btn btn-primary btn-lg btn-block"
-          >Condominium</button>
-        </div>
-      </div>
-      <div class="row" id="selectdistrict">
-        <div class="col-sm-2" style="display: flex; align-items: center;">
-          <span style="font-size:18px;">Districts</span>
-        </div>
-        <div class="col-sm-10" id="colFormLabelLg">
-          <multiselect
-            v-model="value234"
-            :options="options234"
-            :multiple="true"
-            :close-on-select="false"
-            :clear-on-select="false"
-            :preserve-search="true"
-            placeholder="Search for districts ..."
-            label="name"
-            track-by="name"
-            :preselect-first="true"
-            :max="5"
-            @close="fetchData(value234)"
-          ></multiselect>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-5">
-          <b-form-select v-model="fromyear" :options="optionsYear"/>
-        </div>
-        <span>to</span>
-        <div class="col-sm-5">
-          <b-form-select v-model="toyear" :options="optionsYear"/>
-        </div>
-        <button type="button" class="btn btn-outline-info" style="text-transform: uppercase;">submit</button>
-      </div>
-      <h5></h5>
+        <h5></h5>
+      </card>
     </center>
-    <div class="row">
-      <div class="col-sm-3">
-        <h1>34</h1>
+    <div class="row" style="z-index:1;">
+      <div class="col-sm-5">
+        <high-chart-card :chartOptions="bubble.chartOptions"></high-chart-card>
       </div>
-      <div class="col-sm-9">
+      <div class="col-sm-7">
         <high-chart-card :chartOptions="line.chartOptions"></high-chart-card>
       </div>
       <div class="col-sm-5">
         <high-chart-card :chartOptions="barUnits.chartOptions"></high-chart-card>
       </div>
       <div class="col-sm-7">
-        <h5></h5>
         <card>
           <highcharts class="map" :constructor-type="'mapChart'" :options="bkkmap.chartOptions"></highcharts>
         </card>
@@ -102,6 +115,7 @@ export default {
       this.clusterlabel = response.data;
       this.bkkmap.chartOptions.series[0]["data"] = response.data["2017"];
     });
+    this.bubble.chartOptions.series[0]["data"] = this.options234;
   },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
@@ -114,7 +128,7 @@ export default {
       ),
       value234: null,
       options234: [
-        { name: "All", value: "all" },
+        { name: "All", value: 0 },
         { name: "Bang Bon", value: 50 },
         { name: "Bang Kapi", value: 6 },
         { name: "Bang Khae", value: 40 },
@@ -240,7 +254,7 @@ export default {
       line: {
         chartOptions: {
           chart: {
-            height: 350,
+            height: 450,
             style: { fontFamily: "Montserrat" }
           },
           title: {
@@ -312,9 +326,7 @@ export default {
               alignTo: "spacingBox"
             }
           },
-          colorAxis: {
-
-          },
+          colorAxis: {},
           threshold: -1,
           series: [
             {
@@ -335,7 +347,7 @@ export default {
             {
               name: "BTS",
               type: "mapline",
-              nullColor: 'green',
+              nullColor: "green",
               mapData: Highcharts.geojson(
                 topojson.feature(bts, bts.objects.bts_line),
                 "mapline"
@@ -397,7 +409,34 @@ export default {
         { text: "Wang Thonglang", value: "wtl" },
         { text: "Watthana", value: "wtn" },
         { text: "Yan Nawa", value: "ynw" }
-      ]
+      ],
+      bubble: {
+        chartOptions: {
+          chart: {
+            height: 450,
+            type: "packedbubble"
+          },
+          plotOptions: {
+            packedbubble: {
+              dataLabels: {
+                enabled: true,
+                format: "{point.name}",
+                style: {
+                  color: "black",
+                  textOutline: "none",
+                  fontWeight: "normal"
+                }
+              },
+              minPointSize: 5,
+              Draggable: true,
+              useSimulation: true
+            }
+          },
+          series: [{
+            data: []
+          }]
+        }
+      }
     };
   },
   methods: {
