@@ -1,35 +1,37 @@
 
 <template>
-  <div class="row">
-    <div class="col-sm-12">
-      <label class="typo__label">Select with search</label>
-      <multiselect
-        v-model="value"
-        :options="options"
-        placeholder="Select one"
-        label="name"
-        track-by="name"
-        @close="fetchData()"
-        @open="changeVisibility()"
-      ></multiselect>
-    </div>
-    <div class="col-sm-12"></div>
-    <div class="col-sm-7">
-      <card>
-        <highcharts
-          v-if="chartVisibility"
-          class="map"
-          :constructor-type="'mapChart'"
-          :options="bkkmap.chartOptions"
-          :updateArgs="updateArgs"
-        ></highcharts>
-      </card>
-    </div>
-    <div class="col-sm-5">
-      <high-chart-card :chartOptions="barchart.chartOptions"></high-chart-card>
-    </div>
-    <div class="col-sm-8">
-      <high-chart-card :chartOptions="chartDistribution.chartOptions"></high-chart-card>
+  <div>
+    <card style="z-index:2">
+      <div class="row">
+        <div class="col-sm-12">
+          <label class="typo__label">Select with search</label>
+          <multiselect
+            v-model="value"
+            :options="options"
+            placeholder="Select one"
+            label="name"
+            track-by="name"
+            @close="fetchData()"
+            @open="changeVisibility()"
+          ></multiselect>
+        </div>
+      </div>
+    </card>
+    <div class="row">
+      <div class="col-sm-7">
+        <card>
+          <highcharts
+            v-if="chartVisibility"
+            class="map"
+            :constructor-type="'mapChart'"
+            :options="bkkmap.chartOptions"
+            :updateArgs="updateArgs"
+          ></highcharts>
+        </card>
+      </div>
+      <div class="col-sm-8">
+        <high-chart-card :chartOptions="chartDistribution.chartOptions"></high-chart-card>
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +46,9 @@ import Axios from "axios";
 import Multiselect from "vue-multiselect";
 import histogram from "highcharts/modules/histogram-bellcurve.js";
 import { thaimap } from "../assets/th-all";
+import { department_store } from "../assets/department_store";
+import { public_park } from "../assets/public_park";
+import * as topojson from "topojson-client";
 
 histogram(Highcharts);
 More(Highcharts);
@@ -72,6 +77,17 @@ export default {
    */
   data() {
     return {
+      department_store_points: Highcharts.geojson(
+        topojson.feature(
+          department_store,
+          department_store.objects.department_store
+        ),
+        "mappoint"
+      ),
+      public_park_points: Highcharts.geojson(
+        topojson.feature(public_park, public_park.objects.public_park),
+        "mappoint"
+      ),
       sample: "null",
       chartVisibility: true,
       updateArgs: [true, true, { duration: 1000 }],
@@ -128,30 +144,6 @@ export default {
         { name: "Yan Nawa", value: 12 }
       ],
 
-      barchart: {
-        chartOptions: {
-          chart: {
-            type: "column",
-            height: 500,
-            style: { fontFamily: "Montserrat" }
-          },
-          title: {
-            text: "Amount of House and Condominium"
-          },
-          xAxis: {
-            categories: ["House", "Condominium"]
-          },
-          series: [
-            {
-              type: "column",
-              colorByPoint: true,
-              data: [29.9, 71.5],
-              showInLegend: false
-            }
-          ]
-        }
-      },
-
       chartDistribution: {
         chartOptions: {
           title: {
@@ -202,11 +194,7 @@ export default {
       bkkmap: {
         chartOptions: {
           chart: {
-            map: {
-              title: "Bangkok",
-              type: "FeatureCollection",
-              features: [thaimap.features[0]]
-            },
+            map: "myMap",
             height: 500,
             style: {
               fontFamily: "Montserrat"
@@ -214,6 +202,12 @@ export default {
           },
           title: {
             text: "Phra Nakhon"
+          },
+          mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+              alignTo: "spacingBox"
+            }
           },
           series: [
             {
@@ -229,6 +223,25 @@ export default {
               nullColor: "#707070",
               showInLegend: false,
               enableMouseTracking: false
+            },
+            {
+              name: "Department store",
+              type: "mappoint",
+              data: Highcharts.geojson(
+                topojson.feature(
+                  department_store,
+                  department_store.objects.department_store
+                ),
+                "mappoint"
+              )
+            },
+            {
+              name: "Public park",
+              type: "mappoint",
+              data: Highcharts.geojson(
+                topojson.feature(public_park, public_park.objects.public_park),
+                "mappoint"
+              )
             }
           ]
         }
@@ -290,6 +303,28 @@ export default {
   methods: {
     fetchData: function() {
       this.chartVisibility = !this.chartVisibility;
+      var d_points = [];
+      var p_points = [];
+      for (var c = 0; c < this.department_store_points.length; c++) {
+        if (
+          this.inside(
+            this.department_store_points[c],
+            thaimap.features[this.value.value - 1]["geometry"]["coordinates"][0]
+          )
+        ) {
+          d_points.push(this.department_store_points[c]);
+        }
+      }
+      for (var c = 0; c < this.public_park_points.length; c++) {
+        if (
+          this.inside(
+            this.public_park_points[c],
+            thaimap.features[this.value.value - 1]["geometry"]["coordinates"][0]
+          )
+        ) {
+          p_points.push(this.public_park_points[c]);
+        }
+      }
       this.bkkmap = {
         chartOptions: {
           chart: {
@@ -306,6 +341,12 @@ export default {
           title: {
             text: this.value.name
           },
+          mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+              alignTo: "spacingBox"
+            }
+          },
           series: [
             {
               // Use the gb-all map with no data as a basemap
@@ -320,6 +361,16 @@ export default {
               nullColor: "#707070",
               showInLegend: false,
               enableMouseTracking: false
+            },
+            {
+              name: "Department store",
+              type: "mappoint",
+              data: d_points
+            },
+            {
+              name: "Public park",
+              type: "mappoint",
+              data: p_points
             }
           ]
         }
@@ -334,12 +385,35 @@ export default {
           }
         }
         // console.log(k);
-        this.chartDistribution.chartOptions.series[1].data = k.sort((a, b) => a - b);
+        this.chartDistribution.chartOptions.series[1].data = k.sort(
+          (a, b) => a - b
+        );
         // this.chartDistribution.chartOptions.series[1].data = k;
       });
     },
     changeVisibility: function() {
       this.chartVisibility = !this.chartVisibility;
+    },
+    inside(point, vs) {
+      // ray-casting algorithm based on
+      // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+      var x = point["x"],
+        y = -point["y"];
+
+      var inside = false;
+      for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+        var xi = vs[i][0],
+          yi = vs[i][1];
+        var xj = vs[j][0],
+          yj = vs[j][1];
+
+        var intersect =
+          yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+        if (intersect) inside = !inside;
+      }
+
+      return inside;
     }
   }
 };

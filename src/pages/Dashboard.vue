@@ -3,7 +3,7 @@
     <!-- hightchart -->
     <center>
       <card style="z-index:2">
-        <div class="row">
+        <div class="row" id="selectdistrict">
           <div class="col-sm-6">
             <button
               type="button"
@@ -16,14 +16,14 @@
             <button
               type="button"
               v-bind:id="[isActive ? 'condo' : 'house']"
-              @click="isActive = !isActive"
+              @click="toggleClass()"
               class="btn btn-primary btn-lg btn-block"
             >Condominium</button>
           </div>
         </div>
         <div class="row" id="selectdistrict">
           <div class="col-sm-2" style="display: flex; align-items: center;">
-            <span style="font-size:18px;">Districts</span>
+            <span style="font-size:16px;">Districts</span>
           </div>
           <div class="col-sm-10" id="colFormLabelLg">
             <multiselect
@@ -42,29 +42,44 @@
             ></multiselect>
           </div>
         </div>
-        <div class="row">
-          <div class="col-sm-5">
+        <div class="row" id="selectdistrict">
+          <span style="font-size:16px; line-height: 200%;" class="col-sm-1">From</span>
+          <div class="col-sm-2">
             <b-form-select
               style="border: 2px solid #e8e8e8;"
               v-model="fromyear"
-              :options="optionsYear"
+              :options="optionsFromYear"
             />
           </div>
-          <span style="font-size:18px;">to</span>
-          <div class="col-sm-5">
-            <b-form-select
-              style="border: 2px solid #e8e8e8;"
-              v-model="toyear"
-              :options="optionsYear"
-            />
+          <span style="font-size:16px; line-height: 200%;" class="col-sm-1">to</span>
+          <div class="col-sm-2">
+            <b-form-select style="border: 2px solid #e8e8e8;" v-model="toyear">
+              <option
+                v-for="option in optionsToYear"
+                v-bind:value="option.value"
+                v-bind:key="option.value"
+              >{{ option.text }}</option>
+            </b-form-select>
           </div>
-          <button
-            type="button"
-            class="btn btn-outline-info"
-            style="text-transform: uppercase;"
-          >submit</button>
+          <span style="font-size:16px; line-height: 200%;" class="col-sm-1">Range</span>
+          <div class="col-sm-3">
+            <b-form-select style="border: 2px solid #e8e8e8;" v-model="toyear">
+              <option
+                v-for="option in optionsToYear"
+                v-bind:value="option.value"
+                v-bind:key="option.value"
+              >{{ option.text }}</option>
+            </b-form-select>
+          </div>
+          <div class="col-sm-2">
+            <b-button
+              block
+              variant="outline-success"
+              style="text-transform: uppercase;"
+              @click="fetchData(value234)"
+            >Submit</b-button>
+          </div>
         </div>
-        <h5></h5>
       </card>
     </center>
     <div class="row" style="z-index:1;">
@@ -78,6 +93,12 @@
         <high-chart-card :chartOptions="barUnits.chartOptions"></high-chart-card>
       </div>
       <div class="col-sm-7">
+        <div class="can-toggle demo-rebrand-1">
+          <input id="d" type="checkbox" v-model="toggle" @click="fetchData(value234)">
+          <label for="d">
+            <div class="can-toggle__switch" data-checked="Sale" data-unchecked="Rent"></div>
+          </label>
+        </div>
         <card>
           <highcharts class="map" :constructor-type="'mapChart'" :options="bkkmap.chartOptions"></highcharts>
         </card>
@@ -94,9 +115,11 @@ import More from "highcharts/highcharts-more";
 import Highcharts from "highcharts";
 import Multiselect from "vue-multiselect";
 import Axios from "axios";
-import { bts } from "../assets/mrt_line";
+import { bts_line } from "../assets/bts";
+import { mrt_line } from "../assets/mrt";
 import * as topojson from "topojson-client";
 import { thaimap } from "../assets/th-all";
+import { chaopraya_river } from "..//assets/chaopraya_river";
 
 More(Highcharts);
 
@@ -108,22 +131,41 @@ export default {
     Multiselect
   },
   mounted() {
-    Axios.post("http://0.0.0.0:4000/rentalprice", {
-      startyear: 2017,
-      endyear: 2018
+    Axios.post("http://0.0.0.0:4000/price", {
+      startyear: this.fromyear,
+      endyear: this.toyear,
+      ptype: "Condo"
     }).then(response => {
-      this.clusterlabel = response.data;
-      this.bkkmap.chartOptions.series[0]["data"] = response.data["2017"];
+      this.bkkmap.chartOptions.series[0]["data"] = response.data["rent_result"];
     });
-    this.bubble.chartOptions.series[0]["data"] = this.options234;
+    // Retrieve number of units by districts
+      Axios.post("http://0.0.0.0:4000/volume", {
+        startyear: this.fromyear,
+        endyear: this.toyear,
+        ptype: "Condo",
+        districts: ["All"],
+      }).then(response => {
+        this.barUnits.chartOptions.series = [
+          {
+            name: "Selling units",
+            data: [response.data["sale_result"]["All"]]
+          },
+          {
+            name: "Rental units",
+            data: [response.data["rent_result"]["All"]]
+          }
+        ];
+        this.barUnits.chartOptions.xAxis.categories = ["All"]
+      });
   },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
    */
   data() {
     return {
+      toggle: false,
       hh: Highcharts.geojson(
-        topojson.feature(bts, bts.objects.bts_line),
+        topojson.feature(bts_line, bts_line.objects.bts_line),
         "mapline"
       ),
       value234: null,
@@ -184,7 +226,7 @@ export default {
       isActive: true,
       fromyear: "2018",
       toyear: "2018",
-      optionsYear: [
+      optionsFromYear: [
         { text: "2010", value: 2010 },
         { text: "2011", value: 2011 },
         { text: "2012", value: 2012 },
@@ -195,7 +237,6 @@ export default {
         { text: "2017", value: 2017 },
         { text: "2018", value: 2018 }
       ],
-
       barUnits: {
         chartOptions: {
           chart: {
@@ -207,7 +248,7 @@ export default {
             text: "Number of selling and rental units"
           },
           subtitle: {
-            text: "for year 2017 only"
+            text: "Accumulated units"
           },
           yAxis: {
             title: {
@@ -342,16 +383,39 @@ export default {
                 format: "{point.name}"
               },
               allAreas: true,
-              data: [["pn", 1], ["sm", 6]]
+              joinBy: "name",
+              data: [["pn", 100], ["sm", 6]]
             },
             {
               name: "BTS",
               type: "mapline",
               nullColor: "green",
+              color: "green",
               mapData: Highcharts.geojson(
-                topojson.feature(bts, bts.objects.bts_line),
+                topojson.feature(bts_line, bts_line.objects.bts_line),
                 "mapline"
               ),
+              lineWidth: 2,
+              colorAxis: false
+            },
+            {
+              name: "MRT",
+              type: "mapline",
+              nullColor: "blue",
+              color: "blue",
+              mapData: Highcharts.geojson(
+                topojson.feature(mrt_line, mrt_line.objects.mrt_line),
+                "mapline"
+              ),
+              lineWidth: 2,
+              colorAxis: false
+            },
+            {
+              name: "River",
+              type: "mapline",
+              nullColor: "black",
+              color: "black",
+              mapData: chaopraya_river,
               lineWidth: 2,
               colorAxis: false
             }
@@ -432,9 +496,11 @@ export default {
               useSimulation: true
             }
           },
-          series: [{
-            data: []
-          }]
+          series: [
+            {
+              data: []
+            }
+          ]
         }
       }
     };
@@ -451,30 +517,22 @@ export default {
     fetchData: function(value234) {
       // your fetch logic here
       var k = [];
-      var c = [];
-      var i, j;
-      for (i = 0; i < value234.length; i++) {
+      for (var i = 0; i < value234.length; i++) {
         k.push(this.value234[i].name);
-        c.push(this.value234[i].value);
       }
       this.barUnits.chartOptions.xAxis.categories = k;
+
       // Retrieve number of units by districts
       Axios.post("http://0.0.0.0:4000/volume", {
-        startyear: 2017,
-        endyear: 2018,
-        district_code: c
+        startyear: this.fromyear,
+        endyear: this.toyear,
+        districts: k
       }).then(response => {
         var rental = [];
         var sale = [];
-        for (i = 0; i < value234.length; i++) {
-          for (j = 0; j < value234.length; j++) {
-            if (c[i] == response.data["rent_result"]["2017"][j]["_id"]) {
-              rental.push(response.data["rent_result"]["2017"][j]["count"]);
-            }
-            if (c[i] == response.data["sale_result"]["2017"][j]["_id"]) {
-              sale.push(response.data["sale_result"]["2017"][j]["count"]);
-            }
-          }
+        for (var i = 0; i < value234.length; i++) {
+          rental.push(response.data["rent_result"][k[i]]);
+          sale.push(response.data["sale_result"][k[i]]);
         }
         this.barUnits.chartOptions.series = [
           {
@@ -487,6 +545,28 @@ export default {
           }
         ];
       });
+
+      var prop_type = this.isActive ? "House" : "Condo";
+      var price_type = this.toggle ? "rent_result" : "sale_result";
+      Axios.post("http://0.0.0.0:4000/price", {
+        startyear: this.fromyear,
+        endyear: this.toyear,
+        ptype: prop_type
+      }).then(response => {
+        this.bkkmap.chartOptions.series[0]["data"] =
+          response.data[price_type];
+      });
+    }
+  },
+  computed: {
+    optionsToYear: function() {
+      var option = [];
+      for (var i = 0; i < this.optionsFromYear.length; i++) {
+        if (this.optionsFromYear[i].value > this.fromyear) {
+          option.push(this.optionsFromYear[i]);
+        }
+      }
+      return option;
     }
   }
 };
@@ -514,6 +594,6 @@ export default {
   border-style: none;
 }
 #selectdistrict {
-  padding: 20px;
+  padding: 10px;
 }
 </style>

@@ -29,7 +29,8 @@ const routes = [
     beforeEnter (to, from, next) {
       if (!store.getters.isAuthenticated) {
         console.log(store.getters.isAuthenticated)
-        next('/login')
+        // next('/login')
+        next()
       } else {
         next()
       }

@@ -1,14 +1,17 @@
  <template>
   <div>
     <card class="cluster">
-      <highcharts
-        class="map"
-        :constructor-type="'mapChart'"
-        :options="bkkmap.chartOptions"
-      ></highcharts>
+      <highcharts class="map" :constructor-type="'mapChart'" :options="bkkmap.chartOptions"></highcharts>
     </card>
-    {{ bkkmap.chartOptions.series }}
-    <button @click="fetchData()">View stat</button>
+    <div>
+      <b-button @click="fetchData()">View stat</b-button>
+      <b-table striped hover :items="clusterStat" :fields="fields" class="table b-table mt-3 border text-right"></b-table>
+      <!-- <div v-if="isBusy" slot="table-busy" class="text-center text-danger my-2">
+        <div class="spinner-border" role="status"/>
+        <strong class="text-center text-danger my-2">Loading...</strong>
+      </div>-->
+    </div>
+    <!-- {{ bkkmap.chartOptions.series }} -->
   </div>
 </template>
 
@@ -40,6 +43,9 @@ export default {
   },
   data() {
     return {
+      isBusy: true,
+      fields: ["Cluster", "count", "mean", "min", "max", "stdev"],
+      clusterStat: [],
       clusterlabel: null,
       bkkmap: {
         chartOptions: {
@@ -92,8 +98,21 @@ export default {
       Axios.post("http://0.0.0.0:4000/stat", {
         label: this.bkkmap.chartOptions.series
       }).then(response => {
-
-      })
+        var items = [];
+        for (var cluster in response.data) {
+          console.log(cluster)
+          for(var k in response.data[cluster]) {
+            response.data[cluster][k] = this.numberWithCommas(response.data[cluster][k])
+          }
+          response.data[cluster]["Cluster"] = cluster;
+          items.push(response.data[cluster]);
+        }
+        this.clusterStat = items;
+        // this.isBusy = !this.isBusy;
+      });
+    },
+    numberWithCommas: function(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
   }
 };
