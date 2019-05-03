@@ -34,12 +34,6 @@
             
           </div>
         </div>
-        <!-- Select district -->
-        <div class="row" id="selectDistrict">
-        </div>
-        <!-- Select Year -->
-        <div class="row" id="selectYear">
-        </div>
       </card>
     </center>
 
@@ -47,14 +41,36 @@
     <card class="cluster">
       <highcharts class="map" :constructor-type="'mapChart'" :options="bkkmap.chartOptions"></highcharts>
     </card>
-    <div>
-      <b-button @click="fetchData()">View stat</b-button>
-      <b-table striped hover :items="clusterStat" :fields="fields" class="table b-table mt-3 border text-right"></b-table>
-      <!-- <div v-if="isBusy" slot="table-busy" class="text-center text-danger my-2">
-        <div class="spinner-border" role="status"/>
-        <strong class="text-center text-danger my-2">Loading...</strong>
-      </div>-->
-    </div>
+    <card class="viewStat">
+      <div class="row" id="viewAndHide">
+        <div class="col-sm-12">
+          <button 
+          type="button"
+          @click="fetchData(); toggleClass()"
+          v-on:click="seen = !seen"
+          class="btn btn-primary btn-lg btn-block"
+          >View stat</button>
+          <div v-if="seen">
+              <div class="Table">
+                <b-table striped hover 
+                :items="clusterStat" 
+                :fields="fields" 
+                :sort-by.sync="sortBy"
+                :sort-desc.sync="sortDesc"
+                class="table b-table mt-3 border text-center"
+                ></b-table>
+                <!-- <div v-if="isBusy" slot="table-busy" class="text-center text-danger my-2">
+                  <div class="spinner-border" role="status"/>
+                  <strong class="text-center text-danger my-2">Loading...</strong>
+                </div>-->
+              </div>
+          </div>
+        </div>
+      </div>
+      
+      
+    </card>
+    
     <!-- {{ bkkmap.chartOptions.series }} -->
   </div>
 </template>
@@ -65,8 +81,8 @@ import Axios from "axios";
 
 export default {
   mounted() {
-    // Axios.get("http://35.187.253.51:4000/mapcluster").then(response => {
-    Axios.get("http://0.0.0.0:4000/mapcluster").then(response => {
+    Axios.get("http://35.187.253.51:4000/mapcluster").then(response => {
+    // Axios.get("http://0.0.0.0:4000/mapcluster").then(response => {
       this.clusterlabel = response.data;
       var i, j;
       for (j = 0; j < 5; j++) {
@@ -90,7 +106,15 @@ export default {
       isActive: true,
       seen: true,
       isBusy: true,
-      fields: ["Cluster", "count", "mean", "min", "max", "stdev"],
+      newTitle : true,
+      fields: [
+        {key: 'Cluster', sortable: true},
+        {key: 'count', sortable: true},
+        {key: 'mean', sortable: true},
+        {key: 'min', sortable: true},
+        {key: 'max', sortable: true},
+        {key: 'stdev', sortable: true}
+      ],
       clusterStat: [],
       clusterlabel: null,
       bkkmap: {
@@ -149,7 +173,7 @@ export default {
       }
     },
     fetchData: function() {
-      Axios.post("http://0.0.0.0:4000/stat", {
+      Axios.post("http://35.187.253.51:4000/stat", {
         label: this.bkkmap.chartOptions.series
       }).then(response => {
         var items = [];
@@ -173,18 +197,21 @@ export default {
 </script>
 
 <style>
-#notSelected {
-  background-color: lightgray;
-  border-style: none;
-}
-#selected {
-  background-color: navy;
-  border-style: none;
-}
-#selectAlgorithm {
-  padding: 10px;
-}
-.cluster {
-  height: 550px;
-}
+  #notSelected {
+    background-color: lightgray;
+    border-style: none;
+  }
+  #selected {
+    background-color: navy;
+    border-style: none;
+  }
+  #selectAlgorithm {
+    padding: 10px;
+  }
+  #viewAndHide{
+    padding: 10px;
+  }
+  .cluster {
+    height: 550px;
+  }
 </style>
