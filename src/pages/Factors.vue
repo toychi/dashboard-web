@@ -1,5 +1,49 @@
  <template>
   <div>
+    <!-- Customize area -->
+    <center>
+      <card style="z-index:2">
+        <div class="row" id="selectAlgorithm">
+          <!-- K-Mean Clustering algorithm -->
+          <div class="col-sm-6">
+            <button
+              type="button"
+              v-bind:id="[isActive ? 'selected' : 'notSelected']"
+              @click="toggleClass()"
+              class="btn btn-primary btn-lg btn-block"
+            >K-mean clustering
+            </button>
+            
+            <div v-if="isActive">
+              <p>Insert your option</p>
+            </div>
+
+          </div>
+          <!-- Density Base Clustering algorithm -->
+          <div class="col-sm-6">
+            <button
+              type="button"
+              v-bind:id="[isActive ? 'notSelected' : 'selected']"
+              @click="toggleClass()"
+              class="btn btn-primary btn-lg btn-block"
+            >Density base clustering</button>
+
+            <div v-if="isActive != true">
+              <p>Insert your option</p>
+            </div>
+            
+          </div>
+        </div>
+        <!-- Select district -->
+        <div class="row" id="selectDistrict">
+        </div>
+        <!-- Select Year -->
+        <div class="row" id="selectYear">
+        </div>
+      </card>
+    </center>
+
+    <!-- Chart -->
     <card class="cluster">
       <highcharts class="map" :constructor-type="'mapChart'" :options="bkkmap.chartOptions"></highcharts>
     </card>
@@ -43,6 +87,8 @@ export default {
   },
   data() {
     return {
+      isActive: true,
+      seen: true,
       isBusy: true,
       fields: ["Cluster", "count", "mean", "min", "max", "stdev"],
       clusterStat: [],
@@ -94,6 +140,14 @@ export default {
     };
   },
   methods: {
+    toggleClass: function(event) {
+      // Check value
+      if (this.isActive) {
+        this.isActive = false;
+      } else {
+        this.isActive = true;
+      }
+    },
     fetchData: function() {
       Axios.post("http://0.0.0.0:4000/stat", {
         label: this.bkkmap.chartOptions.series
@@ -119,10 +173,18 @@ export default {
 </script>
 
 <style>
+#notSelected {
+  background-color: lightgray;
+  border-style: none;
+}
+#selected {
+  background-color: navy;
+  border-style: none;
+}
+#selectAlgorithm {
+  padding: 10px;
+}
 .cluster {
   height: 550px;
 }
 </style>
-
-
-

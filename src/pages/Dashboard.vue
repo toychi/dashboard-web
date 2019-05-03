@@ -7,7 +7,7 @@
           <div class="col-sm-6">
             <button
               type="button"
-              v-bind:id="[isActive ? 'house' : 'condo']"
+              v-bind:id="[isActive ? 'not' : 'selected']"
               @click="toggleClass()"
               class="btn btn-primary btn-lg btn-block"
             >House</button>
@@ -15,7 +15,7 @@
           <div class="col-sm-6">
             <button
               type="button"
-              v-bind:id="[isActive ? 'condo' : 'house']"
+              v-bind:id="[isActive ? 'selected' : 'not']"
               @click="toggleClass()"
               class="btn btn-primary btn-lg btn-block"
             >Condominium</button>
@@ -585,11 +585,11 @@ export default {
 .highcharts-yaxis-grid .highcharts-grid-line {
   display: none;
 } */
-#house {
+#not {
   background-color: lightgray;
   border-style: none;
 }
-#condo {
+#selected {
   background-color: navy;
   border-style: none;
 }
