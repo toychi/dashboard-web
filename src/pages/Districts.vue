@@ -18,7 +18,7 @@
       </div>
     </card>
     <div class="row">
-      <div class="col-sm-7">
+      <div class="col-sm-12">
         <card>
           <highcharts
             v-if="chartVisibility"
@@ -29,7 +29,7 @@
           ></highcharts>
         </card>
       </div>
-      <div class="col-sm-8">
+      <div class="col-sm-12">
         <high-chart-card :chartOptions="chartDistribution.chartOptions"></high-chart-card>
       </div>
     </div>
@@ -149,43 +149,23 @@ export default {
           title: {
             text: "Distribution of price"
           },
-          xAxis: [
-            {
-              title: { text: "Data" },
-              alignTicks: false
-            },
-            {
-              title: { text: "Histogram" },
-              alignTicks: false,
-              opposite: true
-            }
-          ],
-          yAxis: [
-            {
-              title: { text: "Data" }
-            },
-            {
-              title: { text: "Histogram" },
-              opposite: true
-            }
-          ],
+          xAxis: {
+            title: { text: "Histogram" }
+          },
+          yAxis: {
+            title: { text: "Histogram" }
+          },
           series: [
             {
               name: "Histogram",
               type: "histogram",
-              xAxis: 1,
-              yAxis: 1,
-              baseSeries: "s1",
+              baseSeries: 1,
               zIndex: -1
             },
             {
-              name: "Data",
-              type: "scatter",
               data: [1],
-              id: "s1",
-              marker: {
-                radius: 2
-              }
+              visible: false,
+              showInLegend: false
             }
           ]
         }

@@ -89,16 +89,22 @@
       <div class="col-sm-7">
         <high-chart-card :chartOptions="line.chartOptions"></high-chart-card>
       </div>
-      <div class="col-sm-5">
-        <high-chart-card :chartOptions="barUnits.chartOptions"></high-chart-card>
-      </div>
-      <div class="col-sm-7">
+    </div>
+    <b-row>
+      <b-col sm="12">
         <div class="can-toggle demo-rebrand-1">
-          <input id="d" type="checkbox" v-model="toggle" @click="fetchData(value234)">
+          <input id="d" type="checkbox" v-model="toggle" @click="fetchMap()">
           <label for="d">
             <div class="can-toggle__switch" data-checked="Sale" data-unchecked="Rent"></div>
           </label>
         </div>
+      </b-col>
+    </b-row>
+    <div class="row">
+      <div class="col-sm-5">
+        <high-chart-card :chartOptions="barUnits.chartOptions"></high-chart-card>
+      </div>
+      <div class="col-sm-7">
         <card>
           <highcharts class="map" :constructor-type="'mapChart'" :options="bkkmap.chartOptions"></highcharts>
         </card>
@@ -139,24 +145,32 @@ export default {
       this.bkkmap.chartOptions.series[0]["data"] = response.data["rent_result"];
     });
     // Retrieve number of units by districts
-      Axios.post("http://0.0.0.0:4000/volume", {
-        startyear: this.fromyear,
-        endyear: this.toyear,
-        ptype: "Condo",
-        districts: ["All"],
-      }).then(response => {
-        this.barUnits.chartOptions.series = [
-          {
-            name: "Selling units",
-            data: [response.data["sale_result"]["All"]]
-          },
-          {
-            name: "Rental units",
-            data: [response.data["rent_result"]["All"]]
-          }
-        ];
-        this.barUnits.chartOptions.xAxis.categories = ["All"]
-      });
+    Axios.post("http://0.0.0.0:4000/volume", {
+      startyear: this.fromyear,
+      endyear: this.toyear,
+      ptype: "Condo",
+      districts: ["All"]
+    }).then(response => {
+      this.barUnits.chartOptions.series = [
+        {
+          name: "Selling units",
+          data: [response.data["sale_result"]["All"]]
+        },
+        {
+          name: "Rental units",
+          data: [response.data["rent_result"]["All"]]
+        }
+      ];
+      this.barUnits.chartOptions.xAxis.categories = ["All"];
+    });
+    Axios.post("http://0.0.0.0:4000/ratio", {
+      startyear: 2016,
+      endyear: 2019,
+      ptype: "Condo",
+      districts: ["Watthana", "Bang Na", "Bang Khae"]
+    }).then(response => {
+      this.line.chartOptions.series = response.data;
+    });
   },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
@@ -321,12 +335,32 @@ export default {
           },
           series: [
             {
-              name: "All",
-              data: [39, 30, 17, 12, 31, 11, 13, 15]
+              type: "line",
+              data: [
+                {
+                  name: "All",
+                  x: 2010,
+                  y: 12
+                },
+                {
+                  name: "Sathon",
+                  x: 2014,
+                  y: 87
+                }
+              ]
             },
             {
-              name: "Sathon",
-              data: [24, 22, 29, 23, 32, 30, 35, 21]
+              type: "line",
+              data: [
+                {
+                  x: 2010,
+                  y: 128
+                },
+                {
+                  x: 2014,
+                  y: 875
+                }
+              ]
             }
           ],
           responsive: {
@@ -480,8 +514,17 @@ export default {
             height: 450,
             type: "packedbubble"
           },
+          title: {
+            text: "Overall Price-to-rent ratio"
+          },
           plotOptions: {
             packedbubble: {
+              zMin: 0,
+              zMax: 1000,
+              layoutAlgorithm: {
+                splitSeries: false,
+                gravitationalConstant: 0.02
+              },
               dataLabels: {
                 enabled: true,
                 format: "{point.name}",
@@ -498,7 +541,30 @@ export default {
           },
           series: [
             {
-              data: []
+              name: "Europe",
+              data: [
+                {
+                  name: "Germany",
+                  value: 767.1
+                },
+                {
+                  name: "Croatia",
+                  value: 20.7
+                }
+              ]
+            },
+            {
+              name: "Asian",
+              data: [
+                {
+                  name: "Belgium",
+                  value: 97.2
+                },
+                {
+                  name: "Czech Republic",
+                  value: 111.7
+                }
+              ]
             }
           ]
         }
@@ -545,7 +611,17 @@ export default {
           }
         ];
       });
-
+      var prop_type = this.isActive ? "House" : "Condo";
+      Axios.post("http://0.0.0.0:4000/ratio", {
+        startyear: this.fromyear,
+        endyear: this.toyear,
+        ptype: prop_type,
+        districts: k
+      }).then(response => {
+        this.line.chartOptions.series = response.data;
+      });
+    },
+    fetchMap: function() {
       var prop_type = this.isActive ? "House" : "Condo";
       var price_type = this.toggle ? "rent_result" : "sale_result";
       Axios.post("http://0.0.0.0:4000/price", {
@@ -553,8 +629,7 @@ export default {
         endyear: this.toyear,
         ptype: prop_type
       }).then(response => {
-        this.bkkmap.chartOptions.series[0]["data"] =
-          response.data[price_type];
+        this.bkkmap.chartOptions.series[0]["data"] = response.data[price_type];
       });
     }
   },
@@ -562,7 +637,7 @@ export default {
     optionsToYear: function() {
       var option = [];
       for (var i = 0; i < this.optionsFromYear.length; i++) {
-        if (this.optionsFromYear[i].value > this.fromyear) {
+        if (this.optionsFromYear[i].value >= this.fromyear) {
           option.push(this.optionsFromYear[i]);
         }
       }
