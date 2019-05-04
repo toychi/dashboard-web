@@ -1,6 +1,6 @@
 <template>
 <div>
- 
+ <h4> Crawling Status </h4>
   <br>
   <card>
    <table class="table table-bordered table-hover">
@@ -18,7 +18,7 @@
   </thead>
   <tbody>
     <tr>
-      <td><input type="checkbox" name="name1" /></td>
+      <td><input type="checkbox" name="name1" checked/></td>
       <th scope="row">1</th>
       <td>Thaihometown</td>
       <td class="table-success" >Crawling</td>
@@ -27,7 +27,7 @@
       <td>7542</td>
     </tr>
     <tr>
-      <td><input type="checkbox" name="name2" /></td>
+      <td><input type="checkbox" name="name2" checked/></td>
       <th scope="row">2</th>
       <td>Thaiger Property</td>
       <td class="table-success">Crawling</td>
@@ -36,7 +36,7 @@
       <td>8976</td>
     </tr>
     <tr>
-      <td><input type="checkbox" name="name3" /></td>
+      <td><input type="checkbox" name="name3" checked/></td>
       <th scope="row">3</th>
       <td>Homefinder</td>
       <td class="table-danger">Stop</td>
@@ -47,6 +47,10 @@
   </tbody>
 </table>
 </card>
+
+<h7>* Crawling = The system is crawling data from this source, 
+      Stop = The system is stop crawling data from this source due to connection problem
+</h7>
 
 <div class="upload-btn-wrapper col-3">
   <h4>User Input </h4>
@@ -82,9 +86,7 @@
   </card>
 </div>      
 </template>
-<script>
 
-</script>
 <style>
 
 .upload-btn-wrapper {
