@@ -88,7 +88,6 @@
 </template>
 
 <style>
-
 .upload-btn-wrapper {
   position: relative;
   overflow: hidden;
@@ -105,7 +104,7 @@
   font-weight: bold;
 }
 
-.upload-btn-wrapper input[type=file] {
+.upload-btn-wrapper input[type="file"] {
   font-size: 100px;
   position: absolute;
   left: 0;
