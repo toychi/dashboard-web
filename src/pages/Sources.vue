@@ -1,104 +1,92 @@
 <template>
-  <div>
-    <br>
-    <card>
-      <table class="table table-bordered table-hover">
-        <thead>
-          <tr>
-            <th scope="col"></th>
-            <th scope="col">#</th>
-            <th scope="col">Website</th>
-            <th scope="col">Status</th>
-            <th scope="col">Last crawling</th>
-            <th scope="col">Last down</th>
-            <th scope="col">Number of records</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <input type="checkbox" name="name1">
-            </td>
-            <th scope="row">1</th>
-            <td>Thaihometown</td>
-            <td class="table-success">Crawling</td>
-            <td>2018-10-02</td>
-            <td>-</td>
-            <td>7542</td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" name="name2">
-            </td>
-            <th scope="row">2</th>
-            <td>Thaiger Property</td>
-            <td class="table-success">Crawling</td>
-            <td>2018-11-12</td>
-            <td>-</td>
-            <td>8976</td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" name="name3">
-            </td>
-            <th scope="row">3</th>
-            <td>Homefinder</td>
-            <td class="table-danger">Stop</td>
-            <td>-</td>
-            <td>2018-11-12</td>
-            <td>5976</td>
-          </tr>
-        </tbody>
-      </table>
-    </card>
+<div>
+ <h4> Crawling Status </h4>
+  <br>
+  <card>
+   <table class="table table-bordered table-hover">
 
-    <div class="upload-btn-wrapper col-3">
-      <h4>User Input</h4>
-      <button class="btn">Upload a file</button>
-      <input type="file" name="myfile">
-    </div>
-    <br>
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">#</th>
+      <th scope="col">Website</th>
+      <th scope="col">Status</th>
+      <th scope="col">Last crawling</th>
+      <th scope="col">Last down</th>
+      <th scope="col">Number of records</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><input type="checkbox" name="name1" checked/></td>
+      <th scope="row">1</th>
+      <td>Thaihometown</td>
+      <td class="table-success" >Crawling</td>
+      <td>2018-10-02</td>
+      <td>-</td>
+      <td>7542</td>
+    </tr>
+    <tr>
+      <td><input type="checkbox" name="name2" checked/></td>
+      <th scope="row">2</th>
+      <td>Thaiger Property</td>
+      <td class="table-success">Crawling</td>
+      <td>2018-11-12</td>
+      <td>-</td>
+      <td>8976</td>
+    </tr>
+    <tr>
+      <td><input type="checkbox" name="name3" checked/></td>
+      <th scope="row">3</th>
+      <td>Homefinder</td>
+      <td class="table-danger">Stop</td>
+      <td>-</td>
+      <td>2018-11-12</td>
+      <td>5976</td>
+    </tr>
+  </tbody>
+</table>
+</card>
 
-    <card>
-      <table class="table table-bordered table-hover">
-        <thead>
-          <tr>
-            <th scope="col"></th>
-            <th scope="col">#</th>
-            <th scope="col">File</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <input type="checkbox" name="name1">
-            </td>
-            <th scope="row">1</th>
-            <td>Sources1</td>
-            <td class="td-actions text-left">
-              <button
-                type="button"
-                rel="tooltip"
-                title="Remove"
-                class="btn btn-danger btn-simple btn-xs"
-              >
-                <i class="fa fa-times"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </card>
-  </div>
-</template>
-<script>
+<h7>* Crawling = The system is crawling data from this source, 
+      Stop = The system is stop crawling data from this source due to connection problem
+</h7>
 
-export default {
+<div class="upload-btn-wrapper col-3">
+  <h4>User Input </h4>
+  <button class="btn">Upload a file</button>
+  <input type="file" name="myfile" />
+</div>
+<br>
+
+<card>
+   <table class="table table-bordered table-hover">
+     
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">#</th>
+      <th scope="col">File</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><input type="checkbox" name="name1" /></td>
+      <th scope="row">1</th>
+      <td>Sources1</td>
+      <td class="td-actions text-left">
+        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs">
+        <i class="fa fa-times"></i>
+        </button></td>
   
-}
+    </tr>
+    </tbody>
+  </table>
+  </card>
+</div>      
+</template>
 
-</script>
 <style>
 .upload-btn-wrapper {
   position: relative;
