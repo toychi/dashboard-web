@@ -3,7 +3,7 @@
     <!-- hightchart -->
     <center>
       <card style="z-index:2">
-        <div class="row" id="selectdistrict">
+        <div class="row">
           <div class="col-sm-6">
             <button
               type="button"
@@ -23,7 +23,7 @@
         </div>
         <div class="row" id="selectdistrict">
           <div class="col-sm-2" style="display: flex; align-items: center;">
-            <span style="font-size:16px;">Districts</span>
+            <span style="font-size:18px;">Districts</span>
           </div>
           <div class="col-sm-10" id="colFormLabelLg">
             <multiselect
@@ -41,13 +41,12 @@
             ></multiselect>
           </div>
         </div>
-        <div class="row" id="selectdistrict">
-          <span style="font-size:16px; line-height: 200%;" class="col-sm-1">From</span>
-          <div class="col-sm-2">
+        <div class="row">
+          <div class="col-sm-5">
             <b-form-select
               style="border: 2px solid #e8e8e8;"
               v-model="fromyear"
-              :options="optionsFromYear"
+              :options="optionsYear"
             />
           </div>
           <span style="font-size:16px; line-height: 200%;" class="col-sm-1">to</span>
@@ -78,7 +77,13 @@
               @click="fetchData()"
             >Submit</b-button>
           </div>
+          <button
+            type="button"
+            class="btn btn-outline-info"
+            style="text-transform: uppercase;"
+          >submit</button>
         </div>
+        <h5></h5>
       </card>
     </center>
     <div class="row" style="z-index:1;">
@@ -120,8 +125,7 @@ import More from "highcharts/highcharts-more";
 import Highcharts from "highcharts";
 import Multiselect from "vue-multiselect";
 import Axios from "axios";
-import { bts_line } from "../assets/bts";
-import { mrt_line } from "../assets/mrt";
+import { bts } from "../assets/mrt_line";
 import * as topojson from "topojson-client";
 import { thaimap } from "../assets/th-all";
 import { chaopraya_river } from "..//assets/chaopraya_river";
@@ -159,8 +163,10 @@ export default {
       ptype: "Condo",
       districts: ["All"]
     }).then(response => {
-      this.line.chartOptions.series = response.data;
+      this.clusterlabel = response.data;
+      this.bkkmap.chartOptions.series[0]["data"] = response.data["2017"];
     });
+    this.bubble.chartOptions.series[0]["data"] = this.options234;
   },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
@@ -342,32 +348,10 @@ export default {
               name: "BTS",
               type: "mapline",
               nullColor: "green",
-              color: "green",
               mapData: Highcharts.geojson(
-                topojson.feature(bts_line, bts_line.objects.bts_line),
+                topojson.feature(bts, bts.objects.bts_line),
                 "mapline"
               ),
-              lineWidth: 2,
-              colorAxis: false
-            },
-            {
-              name: "MRT",
-              type: "mapline",
-              nullColor: "blue",
-              color: "blue",
-              mapData: Highcharts.geojson(
-                topojson.feature(mrt_line, mrt_line.objects.mrt_line),
-                "mapline"
-              ),
-              lineWidth: 2,
-              colorAxis: false
-            },
-            {
-              name: "River",
-              type: "mapline",
-              nullColor: "black",
-              color: "black",
-              mapData: chaopraya_river,
               lineWidth: 2,
               colorAxis: false
             }
@@ -380,17 +364,8 @@ export default {
             height: 450,
             type: "packedbubble"
           },
-          title: {
-            text: "Overall Price-to-rent ratio"
-          },
           plotOptions: {
             packedbubble: {
-              zMin: 0,
-              zMax: 1000,
-              layoutAlgorithm: {
-                splitSeries: false,
-                gravitationalConstant: 0.02
-              },
               dataLabels: {
                 enabled: true,
                 format: "{point.name}",
@@ -405,34 +380,9 @@ export default {
               useSimulation: true
             }
           },
-          series: [
-            {
-              name: "Europe",
-              data: [
-                {
-                  name: "Germany",
-                  value: 767.1
-                },
-                {
-                  name: "Croatia",
-                  value: 20.7
-                }
-              ]
-            },
-            {
-              name: "Asian",
-              data: [
-                {
-                  name: "Belgium",
-                  value: 97.2
-                },
-                {
-                  name: "Czech Republic",
-                  value: 111.7
-                }
-              ]
-            }
-          ]
+          series: [{
+            data: []
+          }]
         }
       }
     };
