@@ -8,7 +8,7 @@
             <button
               type="button"
               v-bind:id="[isActive ? 'not' : 'selected']"
-              @click="toggleClass()"
+              @click="isActive = !isActive"
               class="btn btn-primary btn-lg btn-block"
             >House</button>
           </div>
@@ -16,7 +16,7 @@
             <button
               type="button"
               v-bind:id="[isActive ? 'selected' : 'not']"
-              @click="toggleClass()"
+              @click="isActive = !isActive"
               class="btn btn-primary btn-lg btn-block"
             >Condominium</button>
           </div>
@@ -27,8 +27,8 @@
           </div>
           <div class="col-sm-10" id="colFormLabelLg">
             <multiselect
-              v-model="value234"
-              :options="options234"
+              v-model="selectedDistrict"
+              :options="optionsDistrict"
               :multiple="true"
               :close-on-select="false"
               :clear-on-select="false"
@@ -38,7 +38,6 @@
               track-by="name"
               :preselect-first="true"
               :max="5"
-              @close="fetchData(value234)"
             ></multiselect>
           </div>
         </div>
@@ -76,7 +75,7 @@
               block
               variant="outline-success"
               style="text-transform: uppercase;"
-              @click="fetchData(value234)"
+              @click="fetchData()"
             >Submit</b-button>
           </div>
         </div>
@@ -93,7 +92,7 @@
     <b-row>
       <b-col sm="12">
         <div class="can-toggle demo-rebrand-1">
-          <input id="d" type="checkbox" v-model="toggle" @click="fetchMap()">
+          <input id="d" type="checkbox" v-model="toggle" @click="fetchLower()">
           <label for="d">
             <div class="can-toggle__switch" data-checked="Sale" data-unchecked="Rent"></div>
           </label>
@@ -126,6 +125,8 @@ import { mrt_line } from "../assets/mrt";
 import * as topojson from "topojson-client";
 import { thaimap } from "../assets/th-all";
 import { chaopraya_river } from "..//assets/chaopraya_river";
+import loadDrillDown from 'highcharts/modules/drilldown';
+loadDrillDown(Highcharts)
 
 More(Highcharts);
 
@@ -142,32 +143,21 @@ export default {
       endyear: this.toyear,
       ptype: "Condo"
     }).then(response => {
-      this.bkkmap.chartOptions.series[0]["data"] = response.data["rent_result"];
+      this.price = response.data;
     });
-    // Retrieve number of units by districts
     Axios.post("http://0.0.0.0:4000/volume", {
       startyear: this.fromyear,
       endyear: this.toyear,
       ptype: "Condo",
       districts: ["All"]
     }).then(response => {
-      this.barUnits.chartOptions.series = [
-        {
-          name: "Selling units",
-          data: [response.data["sale_result"]["All"]]
-        },
-        {
-          name: "Rental units",
-          data: [response.data["rent_result"]["All"]]
-        }
-      ];
-      this.barUnits.chartOptions.xAxis.categories = ["All"];
+      this.volume = response.data;
     });
     Axios.post("http://0.0.0.0:4000/ratio", {
-      startyear: 2016,
-      endyear: 2019,
+      startyear: this.fromyear,
+      endyear: this.toyear,
       ptype: "Condo",
-      districts: ["Watthana", "Bang Na", "Bang Khae"]
+      districts: ["All"]
     }).then(response => {
       this.line.chartOptions.series = response.data;
     });
@@ -177,13 +167,12 @@ export default {
    */
   data() {
     return {
+      price: [],
+      volume: [],
       toggle: false,
-      hh: Highcharts.geojson(
-        topojson.feature(bts_line, bts_line.objects.bts_line),
-        "mapline"
-      ),
-      value234: null,
-      options234: [
+      isActive: true,
+      selectedDistrict: null,
+      optionsDistrict: [
         { name: "All", value: 0 },
         { name: "Bang Bon", value: 50 },
         { name: "Bang Kapi", value: 6 },
@@ -235,73 +224,52 @@ export default {
         { name: "Watthana", value: 39 },
         { name: "Yan Nawa", value: 12 }
       ],
-      options: [{ value: 1, text: "One" }, { value: 2, text: "Two" }],
-      value: null,
-      isActive: true,
-      fromyear: "2018",
-      toyear: "2018",
+      fromyear: 2017,
+      toyear: 2019,
       optionsFromYear: [
-        { text: "2010", value: 2010 },
-        { text: "2011", value: 2011 },
         { text: "2012", value: 2012 },
         { text: "2013", value: 2013 },
         { text: "2014", value: 2014 },
         { text: "2015", value: 2015 },
         { text: "2016", value: 2016 },
         { text: "2017", value: 2017 },
-        { text: "2018", value: 2018 }
+        { text: "2018", value: 2018 },
+        { text: "2019", value: 2019 },
       ],
+
       barUnits: {
         chartOptions: {
           chart: {
-            type: "bar",
+            type: "column",
             height: 500,
             style: { fontFamily: "Montserrat" }
           },
           title: {
-            text: "Number of selling and rental units"
-          },
-          subtitle: {
-            text: "Accumulated units"
+            text: "Number of listing units"
           },
           yAxis: {
             title: {
               text: "Units"
             }
           },
-          legend: {
-            layout: "vertical",
-            align: "right",
-            verticalAlign: "middle"
-          },
           xAxis: {
-            categories: this.value234
+            type: 'category'
           },
           series: [
             {
-              name: "Selling units",
-              data: []
-            },
-            {
-              name: "Rental units",
-              data: []
+              name: "Districts",
+              colorByPoint: true,
+              data: [
+                {
+                  name: "All",
+                  y: 10.57,
+                  drilldown: "All"
+                }
+              ]
             }
           ],
-          responsive: {
-            rules: [
-              {
-                condition: {
-                  maxWidth: 200
-                },
-                chartOptions: {
-                  legend: {
-                    layout: "horizontal",
-                    align: "center",
-                    verticalAlign: "bottom"
-                  }
-                }
-              }
-            ]
+          drilldown: {
+            series: []
           }
         }
       },
@@ -315,6 +283,9 @@ export default {
           title: {
             text: "Price to Rent Ratio"
           },
+          xAxis: {
+            tickInterval: 1
+          },
           yAxis: {
             title: {
               text: "Value"
@@ -325,60 +296,7 @@ export default {
             align: "right",
             verticalAlign: "middle"
           },
-          plotOptions: {
-            series: {
-              label: {
-                connectorAllowed: false
-              },
-              pointStart: 2010
-            }
-          },
-          series: [
-            {
-              type: "line",
-              data: [
-                {
-                  name: "All",
-                  x: 2010,
-                  y: 12
-                },
-                {
-                  name: "Sathon",
-                  x: 2014,
-                  y: 87
-                }
-              ]
-            },
-            {
-              type: "line",
-              data: [
-                {
-                  x: 2010,
-                  y: 128
-                },
-                {
-                  x: 2014,
-                  y: 875
-                }
-              ]
-            }
-          ],
-          responsive: {
-            rules: [
-              {
-                condition: {
-                  maxWidth: 200
-                },
-                chartOptions: {
-                  legend: {
-                    layout: "horizontal",
-                    align: "center",
-                    verticalAlign: "bottom"
-                  }
-                }
-              }
-            ]
-          }
+          series: []
         }
       },
 
@@ -418,7 +336,7 @@ export default {
               },
               allAreas: true,
               joinBy: "name",
-              data: [["pn", 100], ["sm", 6]]
+              data: [["pn",1]]
             },
             {
               name: "BTS",
@@ -456,58 +374,6 @@ export default {
           ]
         }
       },
-      options2: [
-        { text: "All", value: "all" },
-        { text: "Bang Bon", value: "bb" },
-        { text: "Bang Kapi", value: "bkp" },
-        { name: "Bang Khae", value: "bkh" },
-        { text: "Bang Khen", value: "bk" },
-        { text: "Bang Kho Laem", value: "bkl" },
-        { text: "Bang Khun Thian", value: "bkt" },
-        { text: "Bang Na", value: "bn" },
-        { text: "Bang Phlat", value: "bp" },
-        { text: "Bang Rak", value: "br" },
-        { text: "Bang Sue", value: "bs" },
-        { text: "Bangkok Noi", value: "bkn" },
-        { text: "Bangkok Yai", value: "bky" },
-        { text: "Bueng Kum", value: "bku" },
-        { text: "Chom Thong", value: "ct" },
-        { text: "Din Daeng", value: "dd" },
-        { text: "Don Mueang", value: "dm" },
-        { text: "Dusit", value: "ds" },
-        { text: "Huai Khwang", value: "hk" },
-        { text: "Khan Na Yao", value: "kny" },
-        { text: "Khlong Sam Wa", value: "ksw" },
-        { text: "Khlong San", value: "ks" },
-        { text: "Khlong Toei", value: "kt" },
-        { text: "Lak Si", value: "ls" },
-        { text: "Lat Krabang", value: "lkb" },
-        { text: "Lat Phrao", value: "lp" },
-        { text: "Min Buri", value: "mbr" },
-        { text: "Nong Chok", value: "nc" },
-        { text: "Nong Khaem", value: "nk" },
-        { text: "Pathum Wan", value: "ptw" },
-        { text: "Phasi Charoen", value: "pscr" },
-        { text: "Phaya Thai", value: "pyt" },
-        { text: "Phra Khanong", value: "pkn" },
-        { text: "Phra Nakhon", value: "pn" },
-        { text: "Pom Prap Sattru Phai", value: "ppstp" },
-        { text: "Prawet", value: "pw" },
-        { text: "Rat Burana", value: "rbrn" },
-        { text: "Ratchathewi", value: "rctw" },
-        { text: "Sai Mai", value: "sm" },
-        { text: "Samphanthawong", value: "sptw" },
-        { text: "Saphan Sung", value: "sps" },
-        { text: "Sathon", value: "st" },
-        { text: "Suan Luang", value: "sl" },
-        { text: "Taling Chan", value: "tlc" },
-        { text: "Thawi Watthana", value: "twwtn" },
-        { text: "Thon Buri", value: "tbr" },
-        { text: "Thung Khru", value: "tk" },
-        { text: "Wang Thonglang", value: "wtl" },
-        { text: "Watthana", value: "wtn" },
-        { text: "Yan Nawa", value: "ynw" }
-      ],
       bubble: {
         chartOptions: {
           chart: {
@@ -572,46 +438,28 @@ export default {
     };
   },
   methods: {
-    toggleClass: function(event) {
-      // Check value
-      if (this.isActive) {
-        this.isActive = false;
-      } else {
-        this.isActive = true;
-      }
-    },
-    fetchData: function(value234) {
+    fetchData: function() {
       // your fetch logic here
       var k = [];
-      for (var i = 0; i < value234.length; i++) {
-        k.push(this.value234[i].name);
+      for (var i = 0; i < this.selectedDistrict.length; i++) {
+        k.push(this.selectedDistrict[i].name);
       }
-      this.barUnits.chartOptions.xAxis.categories = k;
-
-      // Retrieve number of units by districts
+      var prop_type = this.isActive ? "House" : "Condo";
+      Axios.post("http://0.0.0.0:4000/price", {
+        startyear: this.fromyear,
+        endyear: this.toyear,
+        ptype: prop_type
+      }).then(response => {
+        this.price = response.data
+      });
       Axios.post("http://0.0.0.0:4000/volume", {
         startyear: this.fromyear,
         endyear: this.toyear,
+        ptype: prop_type,
         districts: k
       }).then(response => {
-        var rental = [];
-        var sale = [];
-        for (var i = 0; i < value234.length; i++) {
-          rental.push(response.data["rent_result"][k[i]]);
-          sale.push(response.data["sale_result"][k[i]]);
-        }
-        this.barUnits.chartOptions.series = [
-          {
-            name: "Selling units",
-            data: sale
-          },
-          {
-            name: "Rental units",
-            data: rental
-          }
-        ];
+        this.volume = response.data
       });
-      var prop_type = this.isActive ? "House" : "Condo";
       Axios.post("http://0.0.0.0:4000/ratio", {
         startyear: this.fromyear,
         endyear: this.toyear,
@@ -621,18 +469,14 @@ export default {
         this.line.chartOptions.series = response.data;
       });
     },
-    fetchMap: function() {
-      var prop_type = this.isActive ? "House" : "Condo";
+    fetchLower: function() {
       var price_type = this.toggle ? "rent_result" : "sale_result";
-      Axios.post("http://0.0.0.0:4000/price", {
-        startyear: this.fromyear,
-        endyear: this.toyear,
-        ptype: prop_type
-      }).then(response => {
-        this.bkkmap.chartOptions.series[0]["data"] = response.data[price_type];
-      });
+      this.bkkmap.chartOptions.series[0]["data"] = this.price[price_type];
+      this.barUnits.chartOptions.drilldown.series = this.volume[price_type]
+      this.barUnits.chartOptions.series[0].data = this.volume[price_type.concat('_sum')]
     }
   },
+
   computed: {
     optionsToYear: function() {
       var option = [];
