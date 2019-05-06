@@ -20,6 +20,12 @@ import BootstrapVue from "bootstrap-vue";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
+import loadDrillDown from 'highcharts/modules/drilldown';
+loadDrillDown(Highcharts)
+
+import More from "highcharts/highcharts-more";
+More(Highcharts);
+
 import proj4 from 'proj4';
 window.proj4 = proj4;
 

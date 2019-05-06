@@ -60,7 +60,7 @@
               >{{ option.text }}</option>
             </b-form-select>
           </div>
-          <span style="font-size:16px; line-height: 200%;" class="col-sm-1">Range</span>
+          <!-- <span style="font-size:16px; line-height: 200%;" class="col-sm-1">Range</span>
           <div class="col-sm-3">
             <b-form-select style="border: 2px solid #e8e8e8;" v-model="toyear">
               <option
@@ -69,8 +69,8 @@
                 v-bind:key="option.value"
               >{{ option.text }}</option>
             </b-form-select>
-          </div>
-          <div class="col-sm-2">
+          </div> -->
+          <div class="col-sm-6">
             <b-button
               block
               variant="outline-success"
@@ -82,10 +82,10 @@
       </card>
     </center>
     <div class="row" style="z-index:1;">
-      <div class="col-sm-5">
+      <!-- <div class="col-sm-5">
         <high-chart-card :chartOptions="bubble.chartOptions"></high-chart-card>
-      </div>
-      <div class="col-sm-7">
+      </div> -->
+      <div class="col-sm-12">
         <high-chart-card :chartOptions="line.chartOptions"></high-chart-card>
       </div>
     </div>
@@ -116,7 +116,6 @@
 import { StatsCard, ChartCard, HighChartCard } from "@/components/index";
 import Card from "@/components/Cards/Card.vue";
 import Chartist from "chartist";
-import More from "highcharts/highcharts-more";
 import Highcharts from "highcharts";
 import Multiselect from "vue-multiselect";
 import Axios from "axios";
@@ -125,10 +124,7 @@ import { mrt_line } from "../assets/mrt";
 import * as topojson from "topojson-client";
 import { thaimap } from "../assets/th-all";
 import { chaopraya_river } from "..//assets/chaopraya_river";
-import loadDrillDown from 'highcharts/modules/drilldown';
-loadDrillDown(Highcharts)
 
-More(Highcharts);
 
 export default {
   components: {
@@ -138,14 +134,14 @@ export default {
     Multiselect
   },
   mounted() {
-    Axios.post("http://0.0.0.0:4000/price", {
+    Axios.post("http://35.187.253.51:4000/price", {
       startyear: this.fromyear,
       endyear: this.toyear,
       ptype: "Condo"
     }).then(response => {
       this.price = response.data;
     });
-    Axios.post("http://0.0.0.0:4000/volume", {
+    Axios.post("http://35.187.253.51:4000/volume", {
       startyear: this.fromyear,
       endyear: this.toyear,
       ptype: "Condo",
@@ -153,7 +149,7 @@ export default {
     }).then(response => {
       this.volume = response.data;
     });
-    Axios.post("http://0.0.0.0:4000/ratio", {
+    Axios.post("http://35.187.253.51:4000/ratio", {
       startyear: this.fromyear,
       endyear: this.toyear,
       ptype: "Condo",
@@ -445,14 +441,14 @@ export default {
         k.push(this.selectedDistrict[i].name);
       }
       var prop_type = this.isActive ? "House" : "Condo";
-      Axios.post("http://0.0.0.0:4000/price", {
+      Axios.post("http://35.187.253.51:4000/price", {
         startyear: this.fromyear,
         endyear: this.toyear,
         ptype: prop_type
       }).then(response => {
         this.price = response.data
       });
-      Axios.post("http://0.0.0.0:4000/volume", {
+      Axios.post("http://35.187.253.51:4000/volume", {
         startyear: this.fromyear,
         endyear: this.toyear,
         ptype: prop_type,
@@ -460,7 +456,7 @@ export default {
       }).then(response => {
         this.volume = response.data
       });
-      Axios.post("http://0.0.0.0:4000/ratio", {
+      Axios.post("http://35.187.253.51:4000/ratio", {
         startyear: this.fromyear,
         endyear: this.toyear,
         ptype: prop_type,

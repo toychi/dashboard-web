@@ -3,7 +3,7 @@ export const thaimap = {
   type: "FeatureCollection",
   "hc-transform": {
     "default": {
-      "crs": "+proj=lcc +lat_1=33 +lat_2=45 +lat_0=39 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs"
+      "crs": "+title=NAD83 (long/lat) +proj=longlat +a=6378137.0 +b=6356752.31414036 +ellps=GRS80 +datum=NAD83 +units=degrees"
     }
   },
   features: [

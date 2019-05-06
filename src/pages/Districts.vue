@@ -18,7 +18,7 @@
       </div>
     </card>
     <div class="row">
-      <div class="col-sm-8">
+      <div class="col-sm-12">
         <card>
           <highcharts
             v-if="chartVisibility"
@@ -298,7 +298,7 @@ export default {
           p_points.push(this.public_park_points[c]);
         }
       }
-      Axios.post("http://0.0.0.0:4000/location", {
+      Axios.post("http://35.187.253.51:4000/location", {
         district: this.value.name
       }).then(response => {
         for (var c = 0; c < response.data.length; c++) {
@@ -313,7 +313,7 @@ export default {
                 type: "FeatureCollection",
                 "hc-transform": {
                   "default": {
-                    "crs": "+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees"
+                    "crs": "+title=NAD83 (long/lat) +proj=longlat +a=6378137.0 +b=6356752.31414036 +ellps=GRS80 +datum=NAD83 +units=degrees"
                   }
                 },
                 features: [thaimap.features[this.value.value - 1]]
@@ -367,7 +367,7 @@ export default {
         };
         this.chartVisibility = !this.chartVisibility;
       });
-      Axios.post("http://0.0.0.0:4000/saledistribution", {
+      Axios.post("http://35.187.253.51:4000/saledistribution", {
         district: this.value.name
       }).then(response => {
         this.chartDistribution.chartOptions.series[1].data = response.data['rent_result'];
