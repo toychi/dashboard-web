@@ -18,7 +18,7 @@
       </div>
     </card>
     <div class="row">
-      <div class="col-sm-12">
+      <div class="col-sm-8">
         <card>
           <highcharts
             v-if="chartVisibility"
@@ -62,21 +62,14 @@ export default {
   },
 
   mounted() {
-    Axios.post("http://0.0.0.0:4000/saledistribution", {
-      districtcode: 50
-    }).then(response => {
-      var k = [];
-      for (var i = 0; i < response.data.length; i++) {
-        k.push(response.data[i]["priceint"]);
-      }
-      this.chartDistribution.chartOptions.series[1].data = k;
-    });
+    
   },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
    */
   data() {
     return {
+      cc: null,
       department_store_points: Highcharts.geojson(
         topojson.feature(
           department_store,
@@ -282,9 +275,9 @@ export default {
   },
   methods: {
     fetchData: function() {
-      this.chartVisibility = !this.chartVisibility;
       var d_points = [];
       var p_points = [];
+      var c_points = [];
       for (var c = 0; c < this.department_store_points.length; c++) {
         if (
           this.inside(
@@ -305,70 +298,79 @@ export default {
           p_points.push(this.public_park_points[c]);
         }
       }
-      this.bkkmap = {
-        chartOptions: {
-          chart: {
-            map: {
-              title: "Bangkok",
-              type: "FeatureCollection",
-              features: [thaimap.features[this.value.value - 1]]
-            },
-            height: 500,
-            style: {
-              fontFamily: "Montserrat"
-            }
-          },
-          title: {
-            text: this.value.name
-          },
-          mapNavigation: {
-            enabled: true,
-            buttonOptions: {
-              alignTo: "spacingBox"
-            }
-          },
-          series: [
-            {
-              // Use the gb-all map with no data as a basemap
-              name: "Basemap",
-              borderColor: "#A0A0A0",
-              nullColor: "rgba(200, 200, 200, 0.3)",
-              showInLegend: false
-            },
-            {
-              name: "Separators",
-              type: "mapline",
-              nullColor: "#707070",
-              showInLegend: false,
-              enableMouseTracking: false
-            },
-            {
-              name: "Department store",
-              type: "mappoint",
-              data: d_points
-            },
-            {
-              name: "Public park",
-              type: "mappoint",
-              data: p_points
-            }
-          ]
-        }
-      };
-      Axios.post("http://0.0.0.0:4000/saledistribution", {
-        districtcode: this.value.value
+      Axios.post("http://0.0.0.0:4000/location", {
+        district: this.value.name
       }).then(response => {
-        var k = [];
-        for (var i = 0; i < response.data.length; i++) {
-          if (response.data[i]["priceint"] != null) {
-            k.push(response.data[i]["priceint"]);
-          }
+        for (var c = 0; c < response.data.length; c++) {
+          c_points.push(response.data[c])
         }
-        // console.log(k);
-        this.chartDistribution.chartOptions.series[1].data = k.sort(
-          (a, b) => a - b
-        );
-        // this.chartDistribution.chartOptions.series[1].data = k;
+        this.cc = c_points;
+        this.bkkmap = {
+          chartOptions: {
+            chart: {
+              map: {
+                title: "Bangkok",
+                type: "FeatureCollection",
+                "hc-transform": {
+                  "default": {
+                    "crs": "+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees"
+                  }
+                },
+                features: [thaimap.features[this.value.value - 1]]
+              },
+              height: 500,
+              style: {
+                fontFamily: "Montserrat"
+              }
+            },
+            title: {
+              text: this.value.name
+            },
+            mapNavigation: {
+              enabled: true,
+              buttonOptions: {
+                alignTo: "spacingBox"
+              }
+            },
+            series: [
+              {
+                // Use the gb-all map with no data as a basemap
+                name: "Basemap",
+                borderColor: "#A0A0A0",
+                nullColor: "rgba(200, 200, 200, 0.3)",
+                showInLegend: false
+              },
+              {
+                name: "Separators",
+                type: "mapline",
+                nullColor: "#707070",
+                showInLegend: false,
+                enableMouseTracking: false
+              },
+              {
+                name: "Department store",
+                type: "mappoint",
+                data: d_points
+              },
+              {
+                name: "Public park",
+                type: "mappoint",
+                data: p_points
+              },
+              {
+                name: "Condo",
+                type: "mappoint",
+                data: this.cc
+              }
+            ]
+          }
+        };
+        this.chartVisibility = !this.chartVisibility;
+      });
+      Axios.post("http://0.0.0.0:4000/saledistribution", {
+        district: this.value.name
+      }).then(response => {
+        this.chartDistribution.chartOptions.series[1].data = response.data['rent_result'];
       });
     },
     changeVisibility: function() {

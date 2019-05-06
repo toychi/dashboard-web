@@ -20,6 +20,9 @@ import BootstrapVue from "bootstrap-vue";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
+import proj4 from 'proj4';
+window.proj4 = proj4;
+
 Vue.use(BootstrapVue);
 
 Vue.use(PaperDashboard);

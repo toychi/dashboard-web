@@ -20,6 +20,7 @@
     "highcharts-more": "^0.1.7",
     "highcharts-vue": "^1.2.0",
     "install": "^0.12.2",
+    "proj4": "^2.5.0",
     "topojson": "^3.0.2",
     "topojson-client": "^3.0.0",
     "uiv": "^0.31.5",
