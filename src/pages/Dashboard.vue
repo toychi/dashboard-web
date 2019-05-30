@@ -69,7 +69,7 @@
                 v-bind:key="option.value"
               >{{ option.text }}</option>
             </b-form-select>
-          </div> -->
+          </div>-->
           <div class="col-sm-6">
             <b-button
               block
@@ -84,9 +84,9 @@
     <div class="row" style="z-index:1;">
       <!-- <div class="col-sm-5">
         <high-chart-card :chartOptions="bubble.chartOptions"></high-chart-card>
-      </div> -->
+      </div>-->
       <div class="col-sm-12">
-        <high-chart-card :chartOptions="line.chartOptions"></high-chart-card>
+        <high-chart-card ref="demoChart" :chartOptions="line.chartOptions"></high-chart-card>
       </div>
     </div>
     <b-row>
@@ -104,6 +104,9 @@
         <high-chart-card :chartOptions="barUnits.chartOptions"></high-chart-card>
       </div>
       <div class="col-sm-7">
+        <div class="spinner-border" role="status" v-show="loadDone">
+          <span class="sr-only">Loading...</span>
+        </div>
         <card>
           <highcharts class="map" :constructor-type="'mapChart'" :options="bkkmap.chartOptions"></highcharts>
         </card>
@@ -125,7 +128,6 @@ import * as topojson from "topojson-client";
 import { thaimap } from "../assets/th-all";
 import { chaopraya_river } from "..//assets/chaopraya_river";
 
-
 export default {
   components: {
     StatsCard,
@@ -134,14 +136,14 @@ export default {
     Multiselect
   },
   mounted() {
-    Axios.post("http://35.187.253.51:4000/price", {
+    Axios.post("http://0.0.0.0:4000/price", {
       startyear: this.fromyear,
       endyear: this.toyear,
       ptype: "Condo"
     }).then(response => {
       this.price = response.data;
     });
-    Axios.post("http://35.187.253.51:4000/volume", {
+    Axios.post("http://0.0.0.0:4000/volume", {
       startyear: this.fromyear,
       endyear: this.toyear,
       ptype: "Condo",
@@ -149,14 +151,14 @@ export default {
     }).then(response => {
       this.volume = response.data;
     });
-    Axios.post("http://35.187.253.51:4000/ratio", {
-      startyear: this.fromyear,
-      endyear: this.toyear,
-      ptype: "Condo",
-      districts: ["All"]
-    }).then(response => {
-      this.line.chartOptions.series = response.data;
-    });
+    // Axios.post("http://0.0.0.0:4000/ratio", {
+    //   startyear: this.fromyear,
+    //   endyear: this.toyear,
+    //   ptype: "Condo",
+    //   districts: ["All"]
+    // }).then(response => {
+    //   this.line.chartOptions.series = response.data;
+    // });
   },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
@@ -230,7 +232,7 @@ export default {
         { text: "2016", value: 2016 },
         { text: "2017", value: 2017 },
         { text: "2018", value: 2018 },
-        { text: "2019", value: 2019 },
+        { text: "2019", value: 2019 }
       ],
 
       barUnits: {
@@ -249,7 +251,7 @@ export default {
             }
           },
           xAxis: {
-            type: 'category'
+            type: "category"
           },
           series: [
             {
@@ -273,6 +275,7 @@ export default {
       line: {
         chartOptions: {
           chart: {
+            zoomType: "x",
             height: 450,
             style: { fontFamily: "Montserrat" }
           },
@@ -280,7 +283,7 @@ export default {
             text: "Price to Rent Ratio"
           },
           xAxis: {
-            tickInterval: 1
+            type: "datetime"
           },
           yAxis: {
             title: {
@@ -292,7 +295,21 @@ export default {
             align: "right",
             verticalAlign: "middle"
           },
-          series: []
+          series: [
+            {
+              name: "Districts",
+              data: [
+                [1514764800000.0, 449],
+                [1522540800000.0, 312],
+                [1530403200000.0, 364],
+                [1538352000000.0, 315],
+                [1546300800000.0, 361],
+                [1554076800000.0, 84],
+                [1561939200000.0, 0],
+                [1569888000000.0, 0]
+              ]
+            }
+          ]
         }
       },
 
@@ -332,7 +349,7 @@ export default {
               },
               allAreas: true,
               joinBy: "name",
-              data: [["pn",1]]
+              data: [["Yan Nawa", 404]]
             },
             {
               name: "BTS",
@@ -369,67 +386,6 @@ export default {
             }
           ]
         }
-      },
-      bubble: {
-        chartOptions: {
-          chart: {
-            height: 450,
-            type: "packedbubble"
-          },
-          title: {
-            text: "Overall Price-to-rent ratio"
-          },
-          plotOptions: {
-            packedbubble: {
-              zMin: 0,
-              zMax: 1000,
-              layoutAlgorithm: {
-                splitSeries: false,
-                gravitationalConstant: 0.02
-              },
-              dataLabels: {
-                enabled: true,
-                format: "{point.name}",
-                style: {
-                  color: "black",
-                  textOutline: "none",
-                  fontWeight: "normal"
-                }
-              },
-              minPointSize: 5,
-              Draggable: true,
-              useSimulation: true
-            }
-          },
-          series: [
-            {
-              name: "Europe",
-              data: [
-                {
-                  name: "Germany",
-                  value: 767.1
-                },
-                {
-                  name: "Croatia",
-                  value: 20.7
-                }
-              ]
-            },
-            {
-              name: "Asian",
-              data: [
-                {
-                  name: "Belgium",
-                  value: 97.2
-                },
-                {
-                  name: "Czech Republic",
-                  value: 111.7
-                }
-              ]
-            }
-          ]
-        }
       }
     };
   },
@@ -441,22 +397,22 @@ export default {
         k.push(this.selectedDistrict[i].name);
       }
       var prop_type = this.isActive ? "House" : "Condo";
-      Axios.post("http://35.187.253.51:4000/price", {
+      Axios.post("http://0.0.0.0:4000/price", {
         startyear: this.fromyear,
         endyear: this.toyear,
         ptype: prop_type
       }).then(response => {
-        this.price = response.data
+        this.price = response.data;
       });
-      Axios.post("http://35.187.253.51:4000/volume", {
+      Axios.post("http://0.0.0.0:4000/volume", {
         startyear: this.fromyear,
         endyear: this.toyear,
         ptype: prop_type,
         districts: k
       }).then(response => {
-        this.volume = response.data
+        this.volume = response.data;
       });
-      Axios.post("http://35.187.253.51:4000/ratio", {
+      Axios.post("http://0.0.0.0:4000/ratio2", {
         startyear: this.fromyear,
         endyear: this.toyear,
         ptype: prop_type,
@@ -468,8 +424,10 @@ export default {
     fetchLower: function() {
       var price_type = this.toggle ? "rent_result" : "sale_result";
       this.bkkmap.chartOptions.series[0]["data"] = this.price[price_type];
-      this.barUnits.chartOptions.drilldown.series = this.volume[price_type]
-      this.barUnits.chartOptions.series[0].data = this.volume[price_type.concat('_sum')]
+      this.barUnits.chartOptions.drilldown.series = this.volume[price_type];
+      this.barUnits.chartOptions.series[0].data = this.volume[
+        price_type.concat("_sum")
+      ];
     }
   },
 
@@ -482,6 +440,9 @@ export default {
         }
       }
       return option;
+    },
+    loadDone: function() {
+        return this.price.length == 0 ? true : false;
     }
   }
 };

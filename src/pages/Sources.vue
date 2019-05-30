@@ -48,9 +48,9 @@
 </table>
 </card>
 
-<h7>* Crawling = The system is crawling data from this source, 
+<h5>* Crawling = The system is crawling data from this source, 
       Stop = The system is stop crawling data from this source due to connection problem
-</h7>
+</h5>
 
 <div class="upload-btn-wrapper col-3">
   <h4>User Input </h4>
@@ -96,9 +96,6 @@
 import axios from "axios";
 
 export default {
-    /*
-      Defines the data used by the component
-    */
     data(){
       return {
         file: ''
@@ -110,24 +107,14 @@ export default {
         Submits the file to the server
       */
       submitFile(){
-        /*
-                Initialize the form data
-            */
             let formData = new FormData();
-
-            /*
-                Add the form data we need to submit
-            */
             formData.append('file', this.file);
 
-        /*
-          Make the request to the POST /single-file URL
-        */
-            axios.post('http://35.187.253.51:4000/uploadfile',
+            axios.post('http://0.0.0.0:4000/uploadfile',
                 formData,
                 {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
                 }
               }
             ).then(function(){
@@ -137,10 +124,6 @@ export default {
           console.log('FAILURE!!');
         });
       },
-
-      /*
-        Handles a change on the file upload
-      */
       handleFileUpload(){
         this.file = this.$refs.file.files[0];
       }

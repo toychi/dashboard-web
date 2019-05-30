@@ -15,9 +15,8 @@
             @open="changeVisibility()"
           ></multiselect>
         </div>
-      </div>
+       </div> 
     </card>
-    <!-- {{ bkkmap.chartOptions.series[4] }} -->
     <div class="row">
       <div class="col-sm-12">
         <card>
@@ -50,7 +49,6 @@ import { thaimap } from "../assets/th-all";
 import { department_store } from "../assets/department_store";
 import { public_park } from "../assets/public_park";
 import * as topojson from "topojson-client";
-import { bts_station } from "../assets/bts";
 
 histogram(Highcharts);
 More(Highcharts);
@@ -64,14 +62,17 @@ export default {
   },
 
   mounted() {
-    
+    Axios.post("http://0.0.0.0:4000/saledistribution", {
+      district: "Khlong San"
+    }).then(response => {
+      this.chartDistribution.chartOptions.series[1].data = response.data["rent_result"];
+    });
   },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
    */
   data() {
     return {
-      cc: null,
       department_store_points: Highcharts.geojson(
         topojson.feature(
           department_store,
@@ -137,6 +138,19 @@ export default {
         { name: "Wang Thonglang", value: 45 },
         { name: "Watthana", value: 39 },
         { name: "Yan Nawa", value: 12 }
+      ],
+
+      fromyear: 2017,
+      toyear: 2019,
+      optionsFromYear: [
+        { text: "2012", value: 2012 },
+        { text: "2013", value: 2013 },
+        { text: "2014", value: 2014 },
+        { text: "2015", value: 2015 },
+        { text: "2016", value: 2016 },
+        { text: "2017", value: 2017 },
+        { text: "2018", value: 2018 },
+        { text: "2019", value: 2019 },
       ],
 
       chartDistribution: {
@@ -217,14 +231,6 @@ export default {
                 topojson.feature(public_park, public_park.objects.public_park),
                 "mappoint"
               )
-            },
-            {
-              name: "BTS stations",
-              type: "mappoint",
-              data: Highcharts.geojson(
-                topojson.feature(bts_station, bts_station.objects.bts_station),
-                "mappoint"
-              )
             }
           ]
         }
@@ -283,11 +289,12 @@ export default {
       }
     };
   },
+  
   methods: {
     fetchData: function() {
+      this.chartVisibility = !this.chartVisibility;
       var d_points = [];
       var p_points = [];
-      var c_points = [];
       for (var c = 0; c < this.department_store_points.length; c++) {
         if (
           this.inside(
@@ -297,7 +304,7 @@ export default {
         ) {
           d_points.push(this.department_store_points[c]);
         }
-      }
+      };
       for (var c = 0; c < this.public_park_points.length; c++) {
         if (
           this.inside(
@@ -307,7 +314,7 @@ export default {
         ) {
           p_points.push(this.public_park_points[c]);
         }
-      }
+      };
       Axios.post("http://0.0.0.0:4000/location", {
         district: this.value.name
       }).then(response => {
@@ -381,15 +388,19 @@ export default {
         };
         this.chartVisibility = !this.chartVisibility;
       });
+
       Axios.post("http://0.0.0.0:4000/saledistribution", {
         district: this.value.name
       }).then(response => {
-        this.chartDistribution.chartOptions.series[1].data = response.data['rent_result'];
+        this.chartDistribution.chartOptions.series[1].data = response.data["rent_result"];
       });
     },
+    
     changeVisibility: function() {
       this.chartVisibility = !this.chartVisibility;
+      this.chartDistribution.chartOptions.series[1].data = []
     },
+    
     inside(point, vs) {
       // ray-casting algorithm based on
       // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
@@ -411,8 +422,21 @@ export default {
 
       return inside;
     }
-  }
+  },
+   computed: {
+      optionsToYear: function() {
+      var option = [];
+      for (var i = 0; i < this.optionsFromYear.length; i++) {
+        if (this.optionsFromYear[i].value >= this.fromyear) {
+          option.push(this.optionsFromYear[i]);
+        }
+          }
+              return option;
+          }
+        }
 };
+
+
 </script>
 <style>
 </style>

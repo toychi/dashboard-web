@@ -42,7 +42,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: "STD-HOPS"
+      default: "SPATIO-REPS"
     },
     backgroundColor: {
       type: String,
